@@ -426,12 +426,12 @@ h3 {
 }
 
 .hero-fisher {
-    background: linear-gradient(160deg, #2a2008 0%, #1a1508 40%, #0f0e08 100%);
+    background: linear-gradient(160deg, #3d2e0a 0%, #2a1f08 40%, #151008 100%);
     border-right: 1px solid #333;
 }
 
 .hero-toro {
-    background: linear-gradient(200deg, #2a0808 0%, #1a0808 40%, #0f0808 100%);
+    background: linear-gradient(200deg, #3d0c0c 0%, #2a0808 40%, #150808 100%);
 }
 
 .panel-overlay {
@@ -442,11 +442,11 @@ h3 {
 }
 
 .hero-fisher .panel-overlay {
-    background: linear-gradient(160deg, rgba(212, 160, 23, 0.15) 0%, transparent 60%);
+    background: linear-gradient(160deg, rgba(212, 160, 23, 0.3) 0%, transparent 60%);
 }
 
 .hero-toro .panel-overlay {
-    background: linear-gradient(200deg, rgba(204, 34, 34, 0.15) 0%, transparent 60%);
+    background: linear-gradient(200deg, rgba(204, 34, 34, 0.3) 0%, transparent 60%);
 }
 
 .hero-panel:hover .panel-overlay {
