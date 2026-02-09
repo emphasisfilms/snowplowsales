@@ -818,14 +818,13 @@ h3 {
     position: absolute;
     bottom: 24px;
     left: 48px;
-    width: 400px;
+    width: 300px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
 }
 
 @media (max-width: 768px) {
     .hero-signage {
-        width: 280px;
+        width: 210px;
         bottom: 16px;
         left: 36px;
     }
@@ -833,7 +832,7 @@ h3 {
 
 @media (max-width: 480px) {
     .hero-signage {
-        width: 200px;
+        width: 150px;
         bottom: 12px;
         left: 32px;
     }
