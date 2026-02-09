@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Admin | Snow Plow Sales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="admin-login">
+        <div class="admin-login-card">
+            <h1>Snow Plow Sales</h1>
+            <p>Admin Dashboard</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+                <div id="login-error" class="admin-alert admin-alert-error" style="display: none;"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display: none;">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="admin-header-inner">
+                <h2>Equipment Manager</h2>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Alert Area -->
+        <div id="admin-alert" class="admin-alert-container"></div>
+
+        <!-- Equipment List View -->
+        <div id="list-view" class="admin-view">
+            <div class="admin-toolbar">
+                <h3>All Equipment</h3>
+                <button id="add-new-btn" class="btn btn-primary">+ Add Equipment</button>
+            </div>
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Condition</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Images</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipment-table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div id="list-loading" class="admin-loading">
+                <div class="loading-spinner"></div>
+                <p>Loading equipment...</p>
+            </div>
+            <div id="list-empty" class="admin-empty" style="display: none;">
+                <p>No equipment listings yet. Click "Add Equipment" to create your first listing.</p>
+            </div>
+        </div>
+
+        <!-- Equipment Form View -->
+        <div id="form-view" class="admin-view" style="display: none;">
+            <div class="admin-toolbar">
+                <h3 id="form-title">Add Equipment</h3>
+                <button id="form-back-btn" class="btn btn-secondary">&larr; Back to List</button>
+            </div>
+
+            <form id="equipment-form" class="admin-form">
+                <input type="hidden" id="equipment-id">
+
+                <div class="form-grid">
+                    <div class="form-group form-full">
+                        <label for="eq-title">Title *</label>
+                        <input type="text" id="eq-title" required placeholder="e.g. Fisher XV2 8'6&quot; V-Plow">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-manufacturer">Manufacturer</label>
+                        <input type="text" id="eq-manufacturer" placeholder="e.g. Fisher, Toro">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-model">Model</label>
+                        <input type="text" id="eq-model" placeholder="e.g. XV2">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-year">Year</label>
+                        <input type="number" id="eq-year" placeholder="e.g. 2024">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-condition">Condition *</label>
+                        <select id="eq-condition" required>
+                            <option value="new">New</option>
+                            <option value="used">Used</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-price">Price</label>
+                        <input type="number" id="eq-price" step="0.01" placeholder="e.g. 5999.99">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-price-display">Price Display Text</label>
+                        <input type="text" id="eq-price-display" placeholder="e.g. Call for Pricing, $5,999">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-hours">Hours</label>
+                        <input type="number" id="eq-hours" placeholder="For used equipment">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-serial">Serial Number</label>
+                        <input type="text" id="eq-serial" placeholder="Optional">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-status">Status *</label>
+                        <select id="eq-status" required>
+                            <option value="active">Active</option>
+                            <option value="draft">Draft</option>
+                            <option value="sold">Sold</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-sort">Sort Order</label>
+                        <input type="number" id="eq-sort" placeholder="Lower = first (optional)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eq-featured">
+                            <input type="checkbox" id="eq-featured"> Featured Listing
+                        </label>
+                    </div>
+
+                    <div class="form-group form-full">
+                        <label for="eq-description">Description</label>
+                        <textarea id="eq-description" rows="4" placeholder="Describe the equipment..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Image Upload Section -->
+                <div class="admin-images-section">
+                    <h4>Photos</h4>
+                    <div id="image-upload-area" class="image-upload-area">
+                        <input type="file" id="image-input" multiple accept="image/*" style="display: none;">
+                        <button type="button" id="image-upload-btn" class="btn btn-secondary">Choose Photos</button>
+                        <p>JPG, PNG, WebP &mdash; Max 5MB each</p>
+                    </div>
+                    <div id="image-preview-grid" class="image-preview-grid"></div>
+                    <div id="existing-images" class="image-preview-grid"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="save-btn">Save Equipment</button>
+                    <button type="button" id="delete-btn" class="btn btn-danger" style="display: none;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory | Snow Plow Sales | Walpole, NH</title>
-    <meta name="description" content="Browse our current inventory of new and used snow plows, spreaders, Toro snow blowers, mowers, and outdoor power equipment.">
+    <title>Equipment Details | Snow Plow Sales | Walpole, NH</title>
+    <meta name="description" content="View equipment details, photos, and specifications.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -33,25 +33,54 @@
         </nav>
     </header>
 
-    <!-- Page Hero -->
-    <section class="page-hero">
+    <!-- Detail Content -->
+    <section class="detail-page">
         <div class="container">
-            <h1>Current Inventory</h1>
-            <p>Browse our selection of new and used equipment. Call us for pricing and availability.</p>
-        </div>
-    </section>
+            <a href="/inventory.html" class="detail-back">&larr; Back to Inventory</a>
 
-    <!-- Inventory -->
-    <section class="page-content">
-        <div class="container">
-            <div class="inventory-tabs">
-                <button class="inventory-tab active" data-filter="all">All</button>
-                <button class="inventory-tab" data-filter="new">New</button>
-                <button class="inventory-tab" data-filter="used">Used</button>
+            <div class="detail-loading">
+                <div class="loading-spinner"></div>
+                <p>Loading equipment details...</p>
             </div>
 
-            <div class="inventory-grid">
-                <!-- Equipment loaded dynamically from Supabase -->
+            <div class="detail-content" style="display: none;">
+                <div class="detail-layout">
+                    <!-- Gallery -->
+                    <div class="detail-gallery">
+                        <div class="gallery-main">
+                            <img id="gallery-main-img" src="" alt="">
+                            <div class="gallery-placeholder" style="display: none;">
+                                <span>Photo Coming Soon</span>
+                            </div>
+                        </div>
+                        <div class="gallery-thumbs" id="gallery-thumbs"></div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="detail-info">
+                        <div class="detail-header">
+                            <h1 id="detail-title"></h1>
+                            <span id="detail-badge" class="inventory-badge"></span>
+                        </div>
+                        <p id="detail-price" class="detail-price"></p>
+                        <p id="detail-description" class="detail-description"></p>
+
+                        <table class="specs-table" id="specs-table">
+                            <tbody></tbody>
+                        </table>
+
+                        <div class="detail-cta">
+                            <a href="tel:603-352-6855" class="btn btn-primary">Call 603-352-6855</a>
+                            <a href="/contact.html" class="btn btn-secondary">Send a Message</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-error" style="display: none;">
+                <h2>Equipment Not Found</h2>
+                <p>This listing may have been removed or is no longer available.</p>
+                <a href="/inventory.html" class="btn btn-primary">Browse Inventory</a>
             </div>
         </div>
     </section>
@@ -59,7 +88,7 @@
     <!-- CTA -->
     <section class="page-cta">
         <div class="container">
-            <h2>Interested in Something You See?</h2>
+            <h2>Interested in This Equipment?</h2>
             <p>Inventory changes frequently. Give us a call for current pricing and availability.</p>
             <a href="tel:603-352-6855" class="btn btn-primary">Call 603-352-6855</a>
         </div>
@@ -92,6 +121,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/inventory.js"></script>
+    <script src="js/inventory-detail.js"></script>
 </body>
 </html>

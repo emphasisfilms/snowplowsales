@@ -60,27 +60,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Inventory Tabs
-    var tabs = document.querySelectorAll('.inventory-tab');
-    if (tabs.length > 0) {
-        tabs.forEach(function (tab) {
-            tab.addEventListener('click', function () {
-                var filter = this.getAttribute('data-filter');
-
-                tabs.forEach(function (t) { t.classList.remove('active'); });
-                this.classList.add('active');
-
-                document.querySelectorAll('.inventory-item').forEach(function (item) {
-                    if (filter === 'all' || item.getAttribute('data-type') === filter) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        });
-    }
-
     // Contact Form Handler
     var contactForm = document.querySelector('.contact-form form');
     if (contactForm) {
