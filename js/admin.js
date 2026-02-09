@@ -185,6 +185,7 @@
                 var item = response.data;
                 document.getElementById('equipment-id').value = item.id;
                 document.getElementById('eq-title').value = item.title || '';
+                document.getElementById('eq-category').value = item.category || '';
                 document.getElementById('eq-manufacturer').value = item.manufacturer || '';
                 document.getElementById('eq-model').value = item.model || '';
                 document.getElementById('eq-year').value = item.year || '';
@@ -332,6 +333,7 @@
         var id = document.getElementById('equipment-id').value;
         var data = {
             title: document.getElementById('eq-title').value,
+            category: document.getElementById('eq-category').value || null,
             manufacturer: document.getElementById('eq-manufacturer').value || null,
             model: document.getElementById('eq-model').value || null,
             year: document.getElementById('eq-year').value ? parseInt(document.getElementById('eq-year').value) : null,

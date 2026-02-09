@@ -1,8 +1,10 @@
 // Inventory Page - Fetch and render equipment from Supabase
 (function () {
     var grid = document.querySelector('.inventory-grid');
-    var tabs = document.querySelectorAll('.inventory-tab');
-    var currentFilter = 'all';
+    var conditionTabs = document.querySelectorAll('.inventory-tab:not(.category-tab)');
+    var categoryTabs = document.querySelectorAll('.category-tab');
+    var currentCondition = 'all';
+    var currentCategory = 'all';
     var equipmentData = [];
 
     // Show loading state
@@ -75,12 +77,19 @@
         return card;
     }
 
-    // Render all cards with current filter
+    // Render all cards with current filters
     function renderCards() {
         var filtered = equipmentData;
-        if (currentFilter !== 'all') {
-            filtered = equipmentData.filter(function (item) {
-                return item.condition === currentFilter;
+
+        if (currentCondition !== 'all') {
+            filtered = filtered.filter(function (item) {
+                return item.condition === currentCondition;
+            });
+        }
+
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(function (item) {
+                return item.category === currentCategory;
             });
         }
 
@@ -122,15 +131,22 @@
             });
     }
 
-    // Tab filtering
-    tabs.forEach(function (tab) {
+    // Condition tab filtering (All / New / Used)
+    conditionTabs.forEach(function (tab) {
         tab.addEventListener('click', function () {
-            var filter = this.getAttribute('data-filter');
-            currentFilter = filter;
-
-            tabs.forEach(function (t) { t.classList.remove('active'); });
+            currentCondition = this.getAttribute('data-filter');
+            conditionTabs.forEach(function (t) { t.classList.remove('active'); });
             this.classList.add('active');
+            renderCards();
+        });
+    });
 
+    // Category tab filtering (All Types / Plows / Spreaders / etc.)
+    categoryTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            currentCategory = this.getAttribute('data-category');
+            categoryTabs.forEach(function (t) { t.classList.remove('active'); });
+            this.classList.add('active');
             renderCards();
         });
     });

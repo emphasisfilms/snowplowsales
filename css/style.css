@@ -1011,11 +1011,19 @@ h3 {
    Inventory Page
    ======================================== */
 
+.inventory-filters {
+    margin-bottom: 48px;
+}
+
 .inventory-tabs {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 48px;
+    margin-bottom: 12px;
+}
+
+.inventory-tabs:last-child {
+    margin-bottom: 0;
 }
 
 .inventory-tab {

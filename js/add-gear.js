@@ -237,6 +237,7 @@
                 var item = r.data;
                 document.getElementById('gear-id').value = item.id;
                 document.getElementById('f-title').value = item.title || '';
+                document.getElementById('f-category').value = item.category || '';
                 document.getElementById('f-manufacturer').value = item.manufacturer || '';
                 document.getElementById('f-model').value = item.model || '';
                 document.getElementById('f-price').value = item.price || '';
@@ -384,6 +385,7 @@
         var data = {
             title: title,
             condition: condition,
+            category: document.getElementById('f-category').value || null,
             manufacturer: document.getElementById('f-manufacturer').value || null,
             model: document.getElementById('f-model').value || null,
             price: document.getElementById('f-price').value ? parseFloat(document.getElementById('f-price').value) : null,
