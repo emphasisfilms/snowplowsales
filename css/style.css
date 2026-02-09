@@ -809,6 +809,20 @@ h3 {
     padding-top: 24px;
     text-align: center;
     font-size: 0.8rem;
+    position: relative;
+}
+
+.footer-admin {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.65rem;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.footer-admin:hover {
+    color: var(--color-text-light);
 }
 
 /* ========================================
