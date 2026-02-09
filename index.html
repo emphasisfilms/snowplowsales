@@ -60,9 +60,13 @@
             </button>
             <div class="nav-links">
                 <a href="/#about">About</a>
-                <a href="/#products">Products</a>
-                <a href="/products/fisher-plows.html">Fisher Plows</a>
-                <a href="/products/fisher-spreaders.html">Fisher Spreaders</a>
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-dropdown-toggle">Products</a>
+                    <div class="nav-dropdown-menu">
+                        <a href="/products/fisher.html">Fisher</a>
+                        <a href="/products/toro.html">Toro</a>
+                    </div>
+                </div>
                 <a href="/inventory.html">Inventory</a>
                 <a href="/contact.html" class="nav-cta">Contact Us</a>
             </div>
@@ -78,7 +82,7 @@
 
         <!-- Two Big Panels -->
         <div class="hero-split">
-            <a href="/products/fisher-plows.html" class="hero-panel hero-fisher">
+            <a href="/products/fisher.html" class="hero-panel hero-fisher">
                 <div class="panel-overlay"></div>
                 <div class="panel-content">
                     <img src="assets/images/fisher.png" alt="Fisher" class="panel-logo">
@@ -87,7 +91,7 @@
                     <span class="panel-link">Shop Fisher &rarr;</span>
                 </div>
             </a>
-            <a href="/inventory.html" class="hero-panel hero-toro">
+            <a href="/products/toro.html" class="hero-panel hero-toro">
                 <div class="panel-overlay"></div>
                 <div class="panel-content">
                     <img src="assets/images/toro.png" alt="Toro" class="panel-logo">
@@ -134,62 +138,14 @@
         </div>
     </section>
 
-    <!-- Products Section -->
-    <section class="products" id="products">
+    <!-- Inventory Callout -->
+    <section class="cta" id="products">
         <div class="container">
-            <h2>What We Sell</h2>
-            <div class="products-grid">
-                <a href="/products/fisher-plows.html" class="product-card">
-                    <div class="product-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M8 40l24-16 24 16"/>
-                            <rect x="12" y="40" width="40" height="8" rx="1"/>
-                            <path d="M16 48v8M48 48v8"/>
-                            <circle cx="16" cy="56" r="4"/>
-                            <circle cx="48" cy="56" r="4"/>
-                        </svg>
-                    </div>
-                    <h3>Fisher Plows</h3>
-                    <p>Truck plows built for New England winters. Homesteader to heavy-duty commercial.</p>
-                    <span class="product-link">View Plows &rarr;</span>
-                </a>
-                <a href="/products/fisher-spreaders.html" class="product-card">
-                    <div class="product-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <rect x="12" y="16" width="40" height="24" rx="1"/>
-                            <path d="M20 40v8M44 40v8"/>
-                            <circle cx="20" cy="48" r="4"/>
-                            <circle cx="44" cy="48" r="4"/>
-                            <path d="M28 28h8M32 24v8"/>
-                        </svg>
-                    </div>
-                    <h3>Fisher Spreaders</h3>
-                    <p>Salt and sand spreaders. Hopper, tailgate, and walk-behind models.</p>
-                    <span class="product-link">View Spreaders &rarr;</span>
-                </a>
-                <a href="/products/accessories.html" class="product-card">
-                    <div class="product-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <circle cx="32" cy="32" r="20"/>
-                            <path d="M32 20v24M20 32h24"/>
-                        </svg>
-                    </div>
-                    <h3>Parts &amp; Accessories</h3>
-                    <p>Genuine Fisher parts, cutting edges, hydraulics, and truck accessories.</p>
-                    <span class="product-link">View Parts &rarr;</span>
-                </a>
-                <a href="/inventory.html" class="product-card">
-                    <div class="product-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <rect x="8" y="8" width="48" height="48" rx="2"/>
-                            <path d="M8 20h48M24 20v36"/>
-                            <path d="M32 32h16M32 44h16"/>
-                        </svg>
-                    </div>
-                    <h3>Toro Equipment</h3>
-                    <p>Snow blowers, zero-turn mowers, and outdoor power equipment.</p>
-                    <span class="product-link">View Inventory &rarr;</span>
-                </a>
+            <h2>Browse Our Inventory</h2>
+            <p>New and used Fisher plows, spreaders, Toro snow blowers, mowers, and more. See what's in stock right now.</p>
+            <div class="cta-buttons">
+                <a href="/inventory.html" class="btn btn-primary">View Inventory</a>
+                <a href="tel:603-352-6855" class="btn btn-secondary">Call 603-352-6855</a>
             </div>
         </div>
     </section>

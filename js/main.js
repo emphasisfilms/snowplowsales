@@ -13,10 +13,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         navLinks.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', function () {
+                if (this.classList.contains('nav-dropdown-toggle')) return;
                 navToggle.classList.remove('active');
                 navLinks.classList.remove('active');
                 document.body.classList.remove('menu-open');
             });
+        });
+    }
+
+    // Dropdown toggle - prevent navigation on "Products" link
+    var dropdownToggle = document.querySelector('.nav-dropdown-toggle');
+    if (dropdownToggle) {
+        dropdownToggle.addEventListener('click', function (e) {
+            e.preventDefault();
         });
     }
 

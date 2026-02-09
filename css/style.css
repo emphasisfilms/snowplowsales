@@ -238,6 +238,74 @@ h3 {
     width: 100%;
 }
 
+/* Nav Dropdown */
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown-toggle {
+    cursor: pointer;
+}
+
+.nav-dropdown-toggle::after {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: 6px;
+    margin-bottom: 2px;
+    transition: transform var(--transition);
+}
+
+.nav-dropdown:hover .nav-dropdown-toggle::after {
+    transform: rotate(-135deg);
+}
+
+.nav-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 12px;
+    background: rgba(14, 14, 14, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 8px 0;
+    min-width: 140px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+}
+
+.nav-dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-text);
+    transition: all var(--transition);
+}
+
+.nav-dropdown-menu a:hover {
+    color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.nav-dropdown-menu a::after {
+    display: none !important;
+}
+
 .nav-cta {
     background-color: var(--color-accent);
     color: var(--color-bg-dark) !important;
@@ -1287,6 +1355,29 @@ h3 {
     .nav-links a {
         color: var(--color-text-bright);
         font-size: 1.1rem;
+    }
+
+    .nav-dropdown-menu {
+        position: static;
+        transform: none;
+        margin-top: 0;
+        background: transparent;
+        backdrop-filter: none;
+        border: none;
+        padding: 0;
+        opacity: 1;
+        visibility: visible;
+        min-width: 0;
+    }
+
+    .nav-dropdown-menu a {
+        padding: 8px 0;
+        font-size: 0.95rem;
+        color: var(--color-text-light);
+    }
+
+    .nav-dropdown-toggle::after {
+        display: none;
     }
 
     .nav-toggle.active span:nth-child(1) {
