@@ -320,7 +320,7 @@ h3 {
 .panel-logo {
     width: 180px;
     height: auto;
-    margin-bottom: 20px;
+    margin: 0 auto 20px;
 }
 
 .hero-toro .panel-logo {
