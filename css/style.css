@@ -393,6 +393,10 @@ h3 {
     margin: 0 auto 20px;
 }
 
+.hero-toro .panel-logo {
+    height: 90px;
+}
+
 .hero-grunge {
     position: absolute;
     bottom: 0;
