@@ -293,27 +293,11 @@ h3 {
     background: var(--color-bg-dark);
 }
 
-.hero-lockup {
-    display: inline-flex;
-    align-items: center;
-    gap: clamp(16px, 3vw, 28px);
-    margin-bottom: 16px;
-}
-
-.hero-icon {
-    width: clamp(64px, 10vw, 100px);
+.hero-logo {
+    max-width: clamp(280px, 50vw, 520px);
     height: auto;
     filter: invert(1);
-}
-
-.hero-lockup-text h1 {
-    font-size: clamp(2.2rem, 5.5vw, 4rem);
-    font-weight: 900;
-    letter-spacing: 3px;
-    color: var(--color-text-bright);
-    line-height: 0.95;
-    text-align: left;
-    margin-bottom: 0;
+    margin: 0 auto 16px;
 }
 
 .hero-tagline {
@@ -1369,8 +1353,8 @@ h3 {
         padding: 100px 16px 28px;
     }
 
-    .hero-lockup-text h1 {
-        letter-spacing: 2px;
+    .hero-logo {
+        max-width: 240px;
     }
 }
 
