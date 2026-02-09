@@ -795,6 +795,50 @@ h3 {
     border-bottom: 3px solid var(--color-accent);
 }
 
+/* Contact Hero with aerial + signage composite */
+.contact-hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-hero-image {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto 32px;
+    padding: 0 24px;
+}
+
+.hero-fly {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    display: block;
+}
+
+.hero-signage {
+    position: absolute;
+    bottom: 24px;
+    right: 48px;
+    width: 200px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+    .hero-signage {
+        width: 140px;
+        bottom: 16px;
+        right: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-signage {
+        width: 100px;
+        bottom: 12px;
+        right: 32px;
+    }
+}
+
 .page-hero p {
     color: var(--color-text-light);
     font-size: 1.05rem;
