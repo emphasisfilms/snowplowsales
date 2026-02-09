@@ -318,13 +318,11 @@ h3 {
 }
 
 .panel-logo {
-    width: 180px;
-    height: auto;
+    height: 120px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
     margin: 0 auto 20px;
-}
-
-.hero-toro .panel-logo {
-    width: 160px;
 }
 
 .hero-grunge {
@@ -346,7 +344,7 @@ h3 {
 .hero-panel {
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     padding: 60px 40px;
     overflow: hidden;
@@ -386,6 +384,10 @@ h3 {
     position: relative;
     text-align: center;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .panel-badge {
@@ -1318,11 +1320,8 @@ h3 {
     }
 
     .panel-logo {
-        width: 140px;
-    }
-
-    .hero-toro .panel-logo {
-        width: 120px;
+        height: 90px;
+        max-width: 160px;
     }
 
     .about-stats {
