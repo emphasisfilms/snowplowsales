@@ -21,14 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Dropdown toggle - prevent navigation on "Products" link
-    var dropdownToggle = document.querySelector('.nav-dropdown-toggle');
-    if (dropdownToggle) {
-        dropdownToggle.addEventListener('click', function (e) {
-            e.preventDefault();
-        });
-    }
-
     // Navbar Scroll Detection
     var header = document.querySelector('.header');
     if (header) {
