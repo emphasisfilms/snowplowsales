@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Add Gear | Snow Plow Sales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #141414;
+            --bg-card: #1c1c1c;
+            --bg-input: #222222;
+            --border: #333;
+            --text: #d6d0c5;
+            --text-bright: #ede8df;
+            --text-light: #8a8478;
+            --accent: #d4a017;
+            --accent-dark: #b8890f;
+            --green: #66bb6a;
+            --red: #ef5350;
+            --radius: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 24px;
+        }
+
+        .login-screen h1 {
+            color: var(--text-bright);
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .login-screen > p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 32px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-bright);
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .login-box input::placeholder { color: var(--text-light); }
+
+        .login-error {
+            background: rgba(239, 83, 80, 0.15);
+            border: 1px solid rgba(239, 83, 80, 0.3);
+            color: var(--red);
+            padding: 12px;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: #0c0c0c;
+        }
+
+        .btn-accent:active { background: var(--accent-dark); }
+        .btn-accent:disabled { opacity: 0.5; }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-outline:active { background: var(--bg-input); }
+
+        .btn-danger {
+            background: rgba(239, 83, 80, 0.15);
+            color: var(--red);
+            border: 1px solid rgba(239, 83, 80, 0.3);
+        }
+
+        /* App Shell */
+        .app { display: none; }
+
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .app-header h1 {
+            color: var(--text-bright);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+
+        .btn-small {
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-small:active { background: var(--bg-input); }
+
+        /* Form */
+        .gear-form {
+            padding: 16px;
+            padding-bottom: 100px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .field input,
+        .field textarea,
+        .field select {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-bright);
+            font-family: inherit;
+            font-size: 16px;
+            -webkit-appearance: none;
+        }
+
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: var(--text-light);
+        }
+
+        .field select {
+            color: var(--text-bright);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8478' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Condition Toggle */
+        .condition-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .condition-opt {
+            padding: 14px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .condition-opt.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(212, 160, 23, 0.1);
+        }
+
+        .condition-opt:active { transform: scale(0.97); }
+
+        /* Photo Section */
+        .photos-section {
+            margin: 20px 0;
+        }
+
+        .photos-section h3 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .photo-thumb {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .photo-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .add-photo-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--accent);
+            cursor: pointer;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .add-photo-btn:active { border-color: var(--accent); }
+
+        .add-photo-btn svg {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 4px;
+        }
+
+        .add-photo-btn span {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Submit Area */
+        .submit-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border);
+            z-index: 50;
+        }
+
+        /* Success Toast */
+        .toast {
+            position: fixed;
+            top: 70px;
+            left: 16px;
+            right: 16px;
+            padding: 16px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: center;
+            z-index: 100;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background: rgba(46, 125, 50, 0.9);
+            color: white;
+        }
+
+        .toast-error {
+            background: rgba(204, 34, 34, 0.9);
+            color: white;
+        }
+
+        /* List View */
+        .list-view { padding: 8px 16px 100px; }
+
+        .gear-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: border-color 0.2s;
+        }
+
+        .gear-card:active { border-color: var(--accent); }
+
+        .gear-card-thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 6px;
+            background: var(--bg-input);
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: var(--text-light);
+        }
+
+        .gear-card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gear-card-info { flex: 1; min-width: 0; }
+
+        .gear-card-info h4 {
+            color: var(--text-bright);
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .gear-card-info p {
+            color: var(--text-light);
+            font-size: 0.75rem;
+        }
+
+        .gear-card-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        .badge-new { background: rgba(46,125,50,0.2); color: #66bb6a; }
+        .badge-used { background: rgba(230,81,0,0.2); color: #ff9800; }
+        .badge-draft { background: rgba(158,158,158,0.2); color: #9e9e9e; }
+        .badge-sold { background: rgba(230,81,0,0.2); color: #ff9800; }
+
+        .list-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .view-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 8px 16px;
+        }
+
+        .view-tab {
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .view-tab.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(212, 160, 23, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login -->
+    <div id="login-screen" class="login-screen">
+        <h1>Snow Plow Sales</h1>
+        <p>Equipment Manager</p>
+        <div class="login-box">
+            <input type="email" id="login-email" placeholder="Email" autocomplete="email">
+            <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+            <div id="login-error" class="login-error"></div>
+            <button id="login-btn" class="btn btn-accent">Sign In</button>
+        </div>
+    </div>
+
+    <!-- App -->
+    <div id="app" class="app">
+        <header class="app-header">
+            <h1 id="app-title">Gear</h1>
+            <div class="header-actions">
+                <button id="back-btn" class="btn-small" style="display:none;">&larr; Back</button>
+                <button id="logout-btn" class="btn-small">Logout</button>
+            </div>
+        </header>
+
+        <div id="toast" class="toast"></div>
+
+        <!-- List -->
+        <div id="list-section">
+            <div class="view-tabs">
+                <button class="view-tab active" data-filter="active">Active</button>
+                <button class="view-tab" data-filter="all">All</button>
+            </div>
+            <div id="gear-list" class="list-view"></div>
+            <div class="submit-area">
+                <button id="new-gear-btn" class="btn btn-accent">+ Add New Gear</button>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div id="form-section" style="display:none;">
+            <form id="gear-form" class="gear-form">
+                <input type="hidden" id="gear-id">
+
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" id="f-title" placeholder="e.g. Fisher XV2 8'6&quot; V-Plow" required>
+                </div>
+
+                <div class="field">
+                    <label>Condition</label>
+                    <div class="condition-toggle">
+                        <button type="button" class="condition-opt active" data-val="new">New</button>
+                        <button type="button" class="condition-opt" data-val="used">Used</button>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Manufacturer</label>
+                        <input type="text" id="f-manufacturer" placeholder="Fisher, Toro...">
+                    </div>
+                    <div class="field">
+                        <label>Model</label>
+                        <input type="text" id="f-model" placeholder="XV2, HDX...">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Price</label>
+                        <input type="number" id="f-price" inputmode="decimal" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="field">
+                        <label>Price Text</label>
+                        <input type="text" id="f-price-display" placeholder="Call for Pricing">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Description</label>
+                    <textarea id="f-description" placeholder="Quick description..." rows="3"></textarea>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Year</label>
+                        <input type="number" id="f-year" inputmode="numeric" placeholder="2024">
+                    </div>
+                    <div class="field">
+                        <label>Hours</label>
+                        <input type="number" id="f-hours" inputmode="numeric" placeholder="Used only">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Serial #</label>
+                        <input type="text" id="f-serial" placeholder="Optional">
+                    </div>
+                    <div class="field">
+                        <label>Status</label>
+                        <select id="f-status">
+                            <option value="active">Active</option>
+                            <option value="draft">Draft</option>
+                            <option value="sold">Sold</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Photos -->
+                <div class="photos-section">
+                    <h3>Photos</h3>
+                    <div id="photo-grid" class="photo-grid">
+                        <button type="button" id="add-photo-btn" class="add-photo-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                <circle cx="12" cy="13" r="3"/>
+                                <path d="M7 7h.01M17 7h.01"/>
+                            </svg>
+                            <span>Add Photos</span>
+                        </button>
+                    </div>
+                    <input type="file" id="photo-input" multiple accept="image/*" style="display:none;">
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <button type="button" id="delete-gear-btn" class="btn btn-danger" style="display:none;">Delete This Listing</button>
+                </div>
+            </form>
+
+            <div class="submit-area">
+                <button type="button" id="save-btn" class="btn btn-accent">Save Gear</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/add-gear.js"></script>
+</body>
+</html>
