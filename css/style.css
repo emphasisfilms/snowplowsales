@@ -387,15 +387,15 @@ h3 {
 }
 
 .panel-logo {
-    height: 120px;
+    height: 160px;
     width: auto;
-    max-width: 200px;
+    max-width: 240px;
     object-fit: contain;
     margin: 0 auto 20px;
 }
 
 .hero-toro .panel-logo {
-    height: 120px;
+    height: 160px;
     max-width: 160px;
 }
 
@@ -427,12 +427,12 @@ h3 {
 }
 
 .hero-fisher {
-    background: linear-gradient(160deg, #3d2e0a 0%, #2a1f08 40%, #151008 100%);
+    background: linear-gradient(160deg, #503c0d 0%, #352808 40%, #1a1408 100%);
     border-right: 1px solid #333;
 }
 
 .hero-toro {
-    background: linear-gradient(200deg, #3d0c0c 0%, #2a0808 40%, #150808 100%);
+    background: linear-gradient(200deg, #501010 0%, #350808 40%, #1a0808 100%);
 }
 
 .panel-overlay {
@@ -443,11 +443,11 @@ h3 {
 }
 
 .hero-fisher .panel-overlay {
-    background: linear-gradient(160deg, rgba(212, 160, 23, 0.3) 0%, transparent 60%);
+    background: linear-gradient(160deg, rgba(212, 160, 23, 0.45) 0%, transparent 65%);
 }
 
 .hero-toro .panel-overlay {
-    background: linear-gradient(200deg, rgba(204, 34, 34, 0.3) 0%, transparent 60%);
+    background: linear-gradient(200deg, rgba(204, 34, 34, 0.45) 0%, transparent 65%);
 }
 
 .hero-panel:hover .panel-overlay {
@@ -1417,8 +1417,8 @@ h3 {
     }
 
     .panel-logo {
-        height: 90px;
-        max-width: 160px;
+        height: 110px;
+        max-width: 180px;
     }
 
     .about-stats {
