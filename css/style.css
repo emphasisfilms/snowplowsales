@@ -315,6 +315,33 @@ h3 {
     grid-template-columns: 1fr 1fr;
     flex: 1;
     min-height: 50vh;
+    position: relative;
+}
+
+.panel-logo {
+    width: 180px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.hero-toro .panel-logo {
+    width: 160px;
+}
+
+.hero-grunge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.hero-grunge img {
+    width: 100%;
+    display: block;
+    filter: invert(1);
+    opacity: 0.15;
 }
 
 .hero-panel {
@@ -1261,6 +1288,14 @@ h3 {
 
     .panel-content h2 {
         font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+
+    .panel-logo {
+        width: 140px;
+    }
+
+    .hero-toro .panel-logo {
+        width: 120px;
     }
 
     .about-stats {
