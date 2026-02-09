@@ -732,6 +732,11 @@ h3 {
     background: var(--color-bg-alt);
 }
 
+.service-icon {
+    color: var(--color-accent);
+    margin-bottom: 12px;
+}
+
 .service-item h3 {
     color: var(--color-text-bright);
     margin-bottom: 8px;
