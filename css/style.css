@@ -1026,6 +1026,12 @@ h3 {
     margin-bottom: 0;
 }
 
+.category-tabs .inventory-tab {
+    padding: 8px 20px;
+    font-size: 0.75rem;
+    border-width: 1px;
+}
+
 .inventory-tab {
     padding: 12px 28px;
     border: 2px solid var(--color-border);
