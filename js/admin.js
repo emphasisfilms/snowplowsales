@@ -1,4 +1,4 @@
-// Add Gear - Mobile-first quick equipment manager
+// Add Equipment - Mobile-first quick equipment manager
 (function () {
     // Elements
     var loginScreen = document.getElementById('login-screen');
@@ -54,7 +54,7 @@
         app.style.display = 'block';
         if (window.location.search.indexOf('new') !== -1) {
             resetForm();
-            appTitle.textContent = 'Add Gear';
+            appTitle.textContent = 'Add Equipment';
             deleteBtn.style.display = 'none';
             showForm();
         } else {
@@ -102,7 +102,7 @@
         listSection.style.display = 'block';
         formSection.style.display = 'none';
         backBtn.style.display = 'none';
-        appTitle.textContent = 'Gear';
+        appTitle.textContent = 'Equipment';
         loadGear();
     }
 
@@ -117,17 +117,21 @@
 
         if (currentFilter === 'active') {
             query = query.eq('status', 'active');
+        } else if (currentFilter === 'new') {
+            query = query.eq('status', 'active').eq('condition', 'new');
+        } else if (currentFilter === 'used') {
+            query = query.eq('status', 'active').eq('condition', 'used');
         }
 
         query.then(function (r) {
             if (r.error) {
-                gearList.innerHTML = '<div class="list-empty">Error loading gear</div>';
+                gearList.innerHTML = '<div class="list-empty">Error loading equipment</div>';
                 return;
             }
 
             var items = r.data || [];
             if (items.length === 0) {
-                gearList.innerHTML = '<div class="list-empty">No gear yet. Tap + Add New Gear below.</div>';
+                gearList.innerHTML = '<div class="list-empty">No equipment yet. Tap + Add New Equipment below.</div>';
                 return;
             }
 
@@ -186,7 +190,7 @@
     // ========================================
     newGearBtn.addEventListener('click', function () {
         resetForm();
-        appTitle.textContent = 'Add Gear';
+        appTitle.textContent = 'Add Equipment';
         deleteBtn.style.display = 'none';
         showForm();
     });
@@ -227,7 +231,7 @@
     // ========================================
     function editGear(id) {
         resetForm();
-        appTitle.textContent = 'Edit Gear';
+        appTitle.textContent = 'Edit Equipment';
         deleteBtn.style.display = 'block';
         showForm();
 
@@ -237,7 +241,7 @@
         supabase.from('equipment').select('*, equipment_images(*)').eq('id', id).single()
             .then(function (r) {
                 saveBtn.disabled = false;
-                saveBtn.textContent = 'Save Gear';
+                saveBtn.textContent = 'Save Equipment';
 
                 if (r.error) { showToast('Error loading', 'error'); return; }
 
@@ -416,18 +420,18 @@
             if (r.error) {
                 showToast('Error: ' + r.error.message, 'error');
                 saveBtn.disabled = false;
-                saveBtn.textContent = 'Save Gear';
+                saveBtn.textContent = 'Save Equipment';
                 return;
             }
 
             uploadPhotos(r.data.id).then(function () {
                 saveBtn.disabled = false;
-                saveBtn.textContent = 'Save Gear';
-                showToast(id ? 'Gear updated!' : 'Gear added!');
+                saveBtn.textContent = 'Save Equipment';
+                showToast(id ? 'Equipment updated!' : 'Equipment added!');
                 showList();
             }).catch(function (err) {
                 saveBtn.disabled = false;
-                saveBtn.textContent = 'Save Gear';
+                saveBtn.textContent = 'Save Equipment';
                 showToast('Saved but some photos failed', 'error');
                 showList();
             });

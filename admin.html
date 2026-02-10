@@ -532,7 +532,7 @@
     <!-- App -->
     <div id="app" class="app">
         <header class="app-header">
-            <h1 id="app-title">Gear</h1>
+            <h1 id="app-title">Equipment</h1>
             <div class="header-actions">
                 <button id="back-btn" class="btn-small" style="display:none;">&larr; Back</button>
                 <button id="logout-btn" class="btn-small">Logout</button>
@@ -545,11 +545,13 @@
         <div id="list-section">
             <div class="view-tabs">
                 <button class="view-tab active" data-filter="active">Active</button>
+                <button class="view-tab" data-filter="new">New</button>
+                <button class="view-tab" data-filter="used">Used</button>
                 <button class="view-tab" data-filter="all">All</button>
             </div>
             <div id="gear-list" class="list-view"></div>
             <div class="submit-area">
-                <button id="new-gear-btn" class="btn btn-accent">+ Add New Gear</button>
+                <button id="new-gear-btn" class="btn btn-accent">+ Add New Equipment</button>
             </div>
         </div>
 
@@ -657,7 +659,7 @@
             </form>
 
             <div class="submit-area">
-                <button type="button" id="save-btn" class="btn btn-accent">Save Gear</button>
+                <button type="button" id="save-btn" class="btn btn-accent">Save Equipment</button>
             </div>
         </div>
     </div>
