@@ -1,438 +1,467 @@
-// Admin Dashboard - Auth, CRUD, Image Management
+// Add Gear - Mobile-first quick equipment manager
 (function () {
     // Elements
     var loginScreen = document.getElementById('login-screen');
-    var dashboard = document.getElementById('dashboard');
-    var loginForm = document.getElementById('login-form');
+    var app = document.getElementById('app');
+    var loginBtn = document.getElementById('login-btn');
+    var loginEmail = document.getElementById('login-email');
+    var loginPassword = document.getElementById('login-password');
     var loginError = document.getElementById('login-error');
     var logoutBtn = document.getElementById('logout-btn');
-    var listView = document.getElementById('list-view');
-    var formView = document.getElementById('form-view');
-    var addNewBtn = document.getElementById('add-new-btn');
-    var formBackBtn = document.getElementById('form-back-btn');
-    var equipmentForm = document.getElementById('equipment-form');
-    var tableBody = document.getElementById('equipment-table-body');
-    var listLoading = document.getElementById('list-loading');
-    var listEmpty = document.getElementById('list-empty');
-    var deleteBtn = document.getElementById('delete-btn');
-    var formTitle = document.getElementById('form-title');
+    var listSection = document.getElementById('list-section');
+    var formSection = document.getElementById('form-section');
+    var gearForm = document.getElementById('gear-form');
+    var gearList = document.getElementById('gear-list');
+    var newGearBtn = document.getElementById('new-gear-btn');
+    var backBtn = document.getElementById('back-btn');
     var saveBtn = document.getElementById('save-btn');
-    var imageInput = document.getElementById('image-input');
-    var imageUploadBtn = document.getElementById('image-upload-btn');
-    var imagePreviewGrid = document.getElementById('image-preview-grid');
-    var existingImagesGrid = document.getElementById('existing-images');
-    var alertContainer = document.getElementById('admin-alert');
+    var deleteBtn = document.getElementById('delete-gear-btn');
+    var appTitle = document.getElementById('app-title');
+    var photoInput = document.getElementById('photo-input');
+    var addPhotoBtn = document.getElementById('add-photo-btn');
+    var photoGrid = document.getElementById('photo-grid');
+    var toast = document.getElementById('toast');
 
-    var pendingFiles = []; // Files waiting to be uploaded
+    var pendingFiles = [];
+    var existingImages = [];
+    var currentFilter = 'active';
 
     // ========================================
-    // Alerts
+    // Toast
     // ========================================
-    function showAlert(message, type) {
-        var cls = type === 'error' ? 'admin-alert-error' : 'admin-alert-success';
-        alertContainer.innerHTML = '<div class="admin-alert ' + cls + '">' + message + '</div>';
-        setTimeout(function () { alertContainer.innerHTML = ''; }, 5000);
+    function showToast(msg, type) {
+        toast.textContent = msg;
+        toast.className = 'toast toast-' + (type || 'success') + ' show';
+        setTimeout(function () { toast.className = 'toast'; }, 3000);
     }
 
     // ========================================
     // Auth
     // ========================================
     function checkSession() {
-        supabase.auth.getSession().then(function (result) {
-            if (result.data.session) {
-                showDashboard();
-            } else {
-                showLogin();
-            }
+        supabase.auth.getSession().then(function (r) {
+            if (r.data.session) { showApp(); } else { showLogin(); }
         });
     }
 
     function showLogin() {
         loginScreen.style.display = 'flex';
-        dashboard.style.display = 'none';
+        app.style.display = 'none';
     }
 
-    function showDashboard() {
+    function showApp() {
         loginScreen.style.display = 'none';
-        dashboard.style.display = 'block';
-        loadEquipment();
+        app.style.display = 'block';
+        if (window.location.search.indexOf('new') !== -1) {
+            resetForm();
+            appTitle.textContent = 'Add Gear';
+            deleteBtn.style.display = 'none';
+            showForm();
+        } else {
+            showList();
+        }
     }
 
-    loginForm.addEventListener('submit', function (e) {
-        e.preventDefault();
+    loginBtn.addEventListener('click', function () {
         loginError.style.display = 'none';
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing in...';
 
-        var email = document.getElementById('email').value;
-        var password = document.getElementById('password').value;
+        supabase.auth.signInWithPassword({
+            email: loginEmail.value,
+            password: loginPassword.value
+        }).then(function (r) {
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Sign In';
+            if (r.error) {
+                loginError.textContent = r.error.message;
+                loginError.style.display = 'block';
+                return;
+            }
+            showApp();
+        });
+    });
 
-        supabase.auth.signInWithPassword({ email: email, password: password })
-            .then(function (result) {
-                if (result.error) {
-                    loginError.textContent = result.error.message;
-                    loginError.style.display = 'block';
-                    return;
-                }
-                showDashboard();
-            });
+    // Allow Enter key to submit login
+    loginPassword.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') loginBtn.click();
     });
 
     logoutBtn.addEventListener('click', function () {
-        supabase.auth.signOut().then(function () {
-            showLogin();
+        supabase.auth.signOut().then(function () { showLogin(); });
+    });
+
+    supabase.auth.onAuthStateChange(function (event) {
+        if (event === 'SIGNED_OUT') showLogin();
+    });
+
+    // ========================================
+    // List View
+    // ========================================
+    function showList() {
+        listSection.style.display = 'block';
+        formSection.style.display = 'none';
+        backBtn.style.display = 'none';
+        appTitle.textContent = 'Gear';
+        loadGear();
+    }
+
+    function loadGear() {
+        gearList.innerHTML = '<div style="text-align:center;padding:40px;color:#8a8478;"><div class="loading-anim"></div>Loading...</div>';
+
+        var query = supabase
+            .from('equipment')
+            .select('*, equipment_images(id, storage_path, display_order)')
+            .order('sort_order', { ascending: true, nullsFirst: false })
+            .order('created_at', { ascending: false });
+
+        if (currentFilter === 'active') {
+            query = query.eq('status', 'active');
+        }
+
+        query.then(function (r) {
+            if (r.error) {
+                gearList.innerHTML = '<div class="list-empty">Error loading gear</div>';
+                return;
+            }
+
+            var items = r.data || [];
+            if (items.length === 0) {
+                gearList.innerHTML = '<div class="list-empty">No gear yet. Tap + Add New Gear below.</div>';
+                return;
+            }
+
+            gearList.innerHTML = '';
+            items.forEach(function (item) {
+                var card = document.createElement('div');
+                card.className = 'gear-card';
+
+                // Get first image
+                var thumbHtml = '<div class="gear-card-thumb">No Photo</div>';
+                if (item.equipment_images && item.equipment_images.length > 0) {
+                    var sorted = item.equipment_images.slice().sort(function (a, b) {
+                        return (a.display_order || 0) - (b.display_order || 0);
+                    });
+                    var url = getImageUrl(sorted[0].storage_path);
+                    thumbHtml = '<div class="gear-card-thumb"><img src="' + url + '" alt=""></div>';
+                }
+
+                var statusBadge = '';
+                if (item.status !== 'active') {
+                    statusBadge = ' <span class="gear-card-badge badge-' + item.status + '">' + item.status + '</span>';
+                }
+
+                var priceText = '';
+                if (item.price_display) priceText = item.price_display;
+                else if (item.price) priceText = '$' + Number(item.price).toLocaleString();
+
+                card.innerHTML =
+                    thumbHtml +
+                    '<div class="gear-card-info">' +
+                        '<h4>' + item.title + '</h4>' +
+                        '<p>' + (item.manufacturer || '') + (item.model ? ' ' + item.model : '') +
+                        (priceText ? ' &bull; ' + priceText : '') + '</p>' +
+                        '<span class="gear-card-badge badge-' + item.condition + '">' + item.condition + '</span>' +
+                        statusBadge +
+                    '</div>';
+
+                card.addEventListener('click', function () { editGear(item.id); });
+                gearList.appendChild(card);
+            });
+        });
+    }
+
+    // Filter tabs
+    document.querySelectorAll('.view-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.view-tab').forEach(function (t) { t.classList.remove('active'); });
+            this.classList.add('active');
+            currentFilter = this.getAttribute('data-filter');
+            loadGear();
         });
     });
 
     // ========================================
-    // Equipment List
+    // Form View
     // ========================================
-    function loadEquipment() {
-        listLoading.style.display = 'block';
-        listEmpty.style.display = 'none';
-        tableBody.innerHTML = '';
-
-        supabase
-            .from('equipment')
-            .select('*, equipment_images(id)')
-            .order('sort_order', { ascending: true, nullsFirst: false })
-            .order('created_at', { ascending: false })
-            .then(function (response) {
-                listLoading.style.display = 'none';
-
-                if (response.error) {
-                    showAlert('Error loading equipment: ' + response.error.message, 'error');
-                    return;
-                }
-
-                var items = response.data || [];
-                if (items.length === 0) {
-                    listEmpty.style.display = 'block';
-                    return;
-                }
-
-                items.forEach(function (item) {
-                    var row = document.createElement('tr');
-                    var statusClass = 'status-' + item.status;
-                    var priceText = item.price_display || (item.price ? '$' + Number(item.price).toLocaleString() : '—');
-                    var imageCount = item.equipment_images ? item.equipment_images.length : 0;
-
-                    row.innerHTML =
-                        '<td><strong>' + item.title + '</strong></td>' +
-                        '<td><span class="inventory-badge ' + (item.condition === 'new' ? 'badge-new' : 'badge-used') + '">' +
-                            (item.condition === 'new' ? 'New' : 'Used') + '</span></td>' +
-                        '<td>' + priceText + '</td>' +
-                        '<td><span class="admin-status ' + statusClass + '">' + item.status + '</span></td>' +
-                        '<td>' + imageCount + '</td>' +
-                        '<td class="admin-actions">' +
-                            '<button class="btn-edit" data-id="' + item.id + '">Edit</button>' +
-                        '</td>';
-                    tableBody.appendChild(row);
-                });
-
-                // Bind edit buttons
-                tableBody.querySelectorAll('.btn-edit').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
-                        editEquipment(this.getAttribute('data-id'));
-                    });
-                });
-            });
-    }
-
-    // ========================================
-    // Show Form (Add/Edit)
-    // ========================================
-    addNewBtn.addEventListener('click', function () {
+    newGearBtn.addEventListener('click', function () {
         resetForm();
-        formTitle.textContent = 'Add Equipment';
+        appTitle.textContent = 'Add Gear';
         deleteBtn.style.display = 'none';
-        listView.style.display = 'none';
-        formView.style.display = 'block';
+        showForm();
     });
 
-    formBackBtn.addEventListener('click', function () {
-        formView.style.display = 'none';
-        listView.style.display = 'block';
+    backBtn.addEventListener('click', function () {
+        showList();
     });
+
+    function showForm() {
+        listSection.style.display = 'none';
+        formSection.style.display = 'block';
+        backBtn.style.display = 'inline-block';
+        window.scrollTo(0, 0);
+    }
 
     function resetForm() {
-        equipmentForm.reset();
-        document.getElementById('equipment-id').value = '';
+        gearForm.reset();
+        document.getElementById('gear-id').value = '';
         pendingFiles = [];
-        imagePreviewGrid.innerHTML = '';
-        existingImagesGrid.innerHTML = '';
+        existingImages = [];
+        renderPhotos();
+
+        // Reset condition toggle
+        document.querySelectorAll('.condition-opt').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelector('.condition-opt[data-val="new"]').classList.add('active');
     }
 
-    function editEquipment(id) {
+    // Condition toggle
+    document.querySelectorAll('.condition-opt').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.condition-opt').forEach(function (b) { b.classList.remove('active'); });
+            this.classList.add('active');
+        });
+    });
+
+    // ========================================
+    // Edit
+    // ========================================
+    function editGear(id) {
         resetForm();
-        formTitle.textContent = 'Edit Equipment';
-        deleteBtn.style.display = 'inline-flex';
-        saveBtn.textContent = 'Saving...';
+        appTitle.textContent = 'Edit Gear';
+        deleteBtn.style.display = 'block';
+        showForm();
+
         saveBtn.disabled = true;
+        saveBtn.textContent = 'Loading...';
 
-        supabase
-            .from('equipment')
-            .select('*, equipment_images(*)')
-            .eq('id', id)
-            .single()
-            .then(function (response) {
-                saveBtn.textContent = 'Save Equipment';
+        supabase.from('equipment').select('*, equipment_images(*)').eq('id', id).single()
+            .then(function (r) {
                 saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Gear';
 
-                if (response.error) {
-                    showAlert('Error loading equipment: ' + response.error.message, 'error');
-                    return;
-                }
+                if (r.error) { showToast('Error loading', 'error'); return; }
 
-                var item = response.data;
-                document.getElementById('equipment-id').value = item.id;
-                document.getElementById('eq-title').value = item.title || '';
-                document.getElementById('eq-category').value = item.category || '';
-                document.getElementById('eq-manufacturer').value = item.manufacturer || '';
-                document.getElementById('eq-model').value = item.model || '';
-                document.getElementById('eq-year').value = item.year || '';
-                document.getElementById('eq-condition').value = item.condition || 'new';
-                document.getElementById('eq-price').value = item.price || '';
-                document.getElementById('eq-price-display').value = item.price_display || '';
-                document.getElementById('eq-hours').value = item.hours || '';
-                document.getElementById('eq-serial').value = item.serial_number || '';
-                document.getElementById('eq-status').value = item.status || 'active';
-                document.getElementById('eq-sort').value = item.sort_order || '';
-                document.getElementById('eq-featured').checked = item.featured || false;
-                document.getElementById('eq-description').value = item.description || '';
+                var item = r.data;
+                document.getElementById('gear-id').value = item.id;
+                document.getElementById('f-title').value = item.title || '';
+                document.getElementById('f-category').value = item.category || '';
+                document.getElementById('f-manufacturer').value = item.manufacturer || '';
+                document.getElementById('f-model').value = item.model || '';
+                document.getElementById('f-price').value = item.price || '';
+                document.getElementById('f-price-display').value = item.price_display || '';
+                document.getElementById('f-description').value = item.description || '';
+                document.getElementById('f-year').value = item.year || '';
+                document.getElementById('f-hours').value = item.hours || '';
+                document.getElementById('f-serial').value = item.serial_number || '';
+                document.getElementById('f-status').value = item.status || 'active';
 
-                // Render existing images
-                renderExistingImages(item.equipment_images || []);
+                // Condition toggle
+                var cond = item.condition || 'new';
+                document.querySelectorAll('.condition-opt').forEach(function (b) {
+                    b.classList.toggle('active', b.getAttribute('data-val') === cond);
+                });
 
-                listView.style.display = 'none';
-                formView.style.display = 'block';
+                // Existing images
+                existingImages = (item.equipment_images || []).slice().sort(function (a, b) {
+                    return (a.display_order || 0) - (b.display_order || 0);
+                });
+                renderPhotos();
             });
     }
 
     // ========================================
-    // Image Management
+    // Photos
     // ========================================
-    imageUploadBtn.addEventListener('click', function () {
-        imageInput.click();
+    addPhotoBtn.addEventListener('click', function () {
+        photoInput.click();
     });
 
-    imageInput.addEventListener('change', function () {
-        var files = Array.from(this.files);
-        files.forEach(function (file) {
+    photoInput.addEventListener('change', function () {
+        Array.from(this.files).forEach(function (file) {
             if (file.size > 5 * 1024 * 1024) {
-                showAlert(file.name + ' is too large (max 5MB)', 'error');
-                return;
-            }
-            if (!file.type.startsWith('image/')) {
-                showAlert(file.name + ' is not an image', 'error');
+                showToast('Photo too large (max 5MB)', 'error');
                 return;
             }
             pendingFiles.push(file);
-            renderPendingPreview(file);
         });
-        imageInput.value = '';
+        photoInput.value = '';
+        renderPhotos();
     });
 
-    function renderPendingPreview(file) {
-        var div = document.createElement('div');
-        div.className = 'image-preview-item';
+    function renderPhotos() {
+        // Clear all except the add button
+        var items = photoGrid.querySelectorAll('.photo-thumb');
+        items.forEach(function (el) { el.remove(); });
 
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            div.innerHTML =
-                '<img src="' + e.target.result + '" alt="Preview">' +
-                '<button type="button" class="image-remove-btn" title="Remove">&times;</button>';
-            div.querySelector('.image-remove-btn').addEventListener('click', function () {
-                var idx = pendingFiles.indexOf(file);
-                if (idx > -1) pendingFiles.splice(idx, 1);
-                div.remove();
-            });
-        };
-        reader.readAsDataURL(file);
-        imagePreviewGrid.appendChild(div);
-    }
-
-    function renderExistingImages(images) {
-        existingImagesGrid.innerHTML = '';
-        if (!images || images.length === 0) return;
-
-        var sorted = images.slice().sort(function (a, b) {
-            return (a.display_order || 0) - (b.display_order || 0);
-        });
-
-        sorted.forEach(function (img) {
-            var url = getImageUrl(img.storage_path);
+        // Existing images
+        existingImages.forEach(function (img, idx) {
             var div = document.createElement('div');
-            div.className = 'image-preview-item';
+            div.className = 'photo-thumb';
+            var url = getImageUrl(img.storage_path);
             div.innerHTML =
-                '<img src="' + url + '" alt="' + (img.alt_text || 'Equipment photo') + '">' +
-                '<button type="button" class="image-remove-btn" title="Delete image" data-image-id="' + img.id + '" data-storage-path="' + img.storage_path + '">&times;</button>';
+                '<img src="' + url + '" alt="">' +
+                '<button type="button" class="photo-remove" data-idx="' + idx + '" data-type="existing">&times;</button>';
+            photoGrid.insertBefore(div, addPhotoBtn);
+        });
 
-            div.querySelector('.image-remove-btn').addEventListener('click', function () {
-                var imageId = this.getAttribute('data-image-id');
-                var storagePath = this.getAttribute('data-storage-path');
-                if (!confirm('Delete this image?')) return;
-                deleteImage(imageId, storagePath, div);
+        // Pending files
+        pendingFiles.forEach(function (file, idx) {
+            var div = document.createElement('div');
+            div.className = 'photo-thumb';
+            div.innerHTML = '<div style="width:100%;height:100%;background:#222;display:flex;align-items:center;justify-content:center;color:#8a8478;font-size:0.7rem;">Loading...</div>' +
+                '<button type="button" class="photo-remove" data-idx="' + idx + '" data-type="pending">&times;</button>';
+            photoGrid.insertBefore(div, addPhotoBtn);
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var imgEl = document.createElement('img');
+                imgEl.src = e.target.result;
+                imgEl.alt = '';
+                div.querySelector('div').replaceWith(imgEl);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Bind remove buttons
+        photoGrid.querySelectorAll('.photo-remove').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var type = this.getAttribute('data-type');
+                var idx = parseInt(this.getAttribute('data-idx'));
+
+                if (type === 'pending') {
+                    pendingFiles.splice(idx, 1);
+                    renderPhotos();
+                } else {
+                    var img = existingImages[idx];
+                    if (!confirm('Delete this photo?')) return;
+                    supabase.from('equipment_images').delete().eq('id', img.id).then(function (r) {
+                        if (!r.error) {
+                            supabase.storage.from('equipment-photos').remove([img.storage_path]);
+                            existingImages.splice(idx, 1);
+                            renderPhotos();
+                            showToast('Photo deleted');
+                        }
+                    });
+                }
             });
-
-            existingImagesGrid.appendChild(div);
         });
     }
 
-    function deleteImage(imageId, storagePath, element) {
-        // Delete from database
-        supabase.from('equipment_images').delete().eq('id', imageId)
-            .then(function (response) {
-                if (response.error) {
-                    showAlert('Error deleting image record: ' + response.error.message, 'error');
-                    return;
-                }
-                // Delete from storage
-                supabase.storage.from('equipment-photos').remove([storagePath])
-                    .then(function () {
-                        element.remove();
-                        showAlert('Image deleted', 'success');
-                    });
-            });
-    }
-
-    // Upload images for an equipment item
-    function uploadImages(equipmentId) {
+    function uploadPhotos(equipmentId) {
         if (pendingFiles.length === 0) return Promise.resolve();
 
-        var currentMaxOrder = existingImagesGrid.children.length;
-        var promises = pendingFiles.map(function (file, index) {
-            var ext = file.name.split('.').pop();
-            var path = equipmentId + '/' + Date.now() + '-' + index + '.' + ext;
+        var startOrder = existingImages.length;
+        var promises = pendingFiles.map(function (file, i) {
+            var ext = file.name.split('.').pop().toLowerCase();
+            var path = equipmentId + '/' + Date.now() + '-' + i + '.' + ext;
 
-            return supabase.storage.from('equipment-photos').upload(path, file, {
-                contentType: file.type
-            }).then(function (uploadResult) {
-                if (uploadResult.error) {
-                    throw new Error('Upload failed: ' + uploadResult.error.message);
-                }
-                // Insert image record
-                return supabase.from('equipment_images').insert({
-                    equipment_id: equipmentId,
-                    storage_path: path,
-                    display_order: currentMaxOrder + index,
-                    alt_text: ''
+            return supabase.storage.from('equipment-photos').upload(path, file, { contentType: file.type })
+                .then(function (r) {
+                    if (r.error) throw new Error(r.error.message);
+                    return supabase.from('equipment_images').insert({
+                        equipment_id: equipmentId,
+                        storage_path: path,
+                        display_order: startOrder + i,
+                        alt_text: ''
+                    });
                 });
-            });
         });
 
         return Promise.all(promises);
     }
 
     // ========================================
-    // Save Equipment
+    // Save
     // ========================================
-    equipmentForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        saveBtn.textContent = 'Saving...';
-        saveBtn.disabled = true;
+    saveBtn.addEventListener('click', function () {
+        var title = document.getElementById('f-title').value.trim();
+        if (!title) {
+            showToast('Title is required', 'error');
+            return;
+        }
 
-        var id = document.getElementById('equipment-id').value;
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
+        var condition = 'new';
+        var activeOpt = document.querySelector('.condition-opt.active');
+        if (activeOpt) condition = activeOpt.getAttribute('data-val');
+
+        var id = document.getElementById('gear-id').value;
         var data = {
-            title: document.getElementById('eq-title').value,
-            category: document.getElementById('eq-category').value || null,
-            manufacturer: document.getElementById('eq-manufacturer').value || null,
-            model: document.getElementById('eq-model').value || null,
-            year: document.getElementById('eq-year').value ? parseInt(document.getElementById('eq-year').value) : null,
-            condition: document.getElementById('eq-condition').value,
-            price: document.getElementById('eq-price').value ? parseFloat(document.getElementById('eq-price').value) : null,
-            price_display: document.getElementById('eq-price-display').value || null,
-            hours: document.getElementById('eq-hours').value ? parseInt(document.getElementById('eq-hours').value) : null,
-            serial_number: document.getElementById('eq-serial').value || null,
-            status: document.getElementById('eq-status').value,
-            sort_order: document.getElementById('eq-sort').value ? parseInt(document.getElementById('eq-sort').value) : null,
-            featured: document.getElementById('eq-featured').checked,
-            description: document.getElementById('eq-description').value || null,
+            title: title,
+            condition: condition,
+            category: document.getElementById('f-category').value || null,
+            manufacturer: document.getElementById('f-manufacturer').value || null,
+            model: document.getElementById('f-model').value || null,
+            price: document.getElementById('f-price').value ? parseFloat(document.getElementById('f-price').value) : null,
+            price_display: document.getElementById('f-price-display').value || null,
+            description: document.getElementById('f-description').value || null,
+            year: document.getElementById('f-year').value ? parseInt(document.getElementById('f-year').value) : null,
+            hours: document.getElementById('f-hours').value ? parseInt(document.getElementById('f-hours').value) : null,
+            serial_number: document.getElementById('f-serial').value || null,
+            status: document.getElementById('f-status').value,
             updated_at: new Date().toISOString()
         };
 
         var savePromise;
         if (id) {
-            // Update
             savePromise = supabase.from('equipment').update(data).eq('id', id).select().single();
         } else {
-            // Insert
             savePromise = supabase.from('equipment').insert(data).select().single();
         }
 
-        savePromise.then(function (response) {
-            if (response.error) {
-                showAlert('Error saving: ' + response.error.message, 'error');
-                saveBtn.textContent = 'Save Equipment';
+        savePromise.then(function (r) {
+            if (r.error) {
+                showToast('Error: ' + r.error.message, 'error');
                 saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Gear';
                 return;
             }
 
-            var savedId = response.data.id;
-
-            // Upload any pending images
-            uploadImages(savedId).then(function () {
-                showAlert('Equipment saved successfully!', 'success');
-                saveBtn.textContent = 'Save Equipment';
+            uploadPhotos(r.data.id).then(function () {
                 saveBtn.disabled = false;
-                pendingFiles = [];
-                imagePreviewGrid.innerHTML = '';
-
-                formView.style.display = 'none';
-                listView.style.display = 'block';
-                loadEquipment();
+                saveBtn.textContent = 'Save Gear';
+                showToast(id ? 'Gear updated!' : 'Gear added!');
+                showList();
             }).catch(function (err) {
-                showAlert('Equipment saved but some images failed: ' + err.message, 'error');
-                saveBtn.textContent = 'Save Equipment';
                 saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Gear';
+                showToast('Saved but some photos failed', 'error');
+                showList();
             });
         });
     });
 
     // ========================================
-    // Delete Equipment
+    // Delete
     // ========================================
     deleteBtn.addEventListener('click', function () {
-        var id = document.getElementById('equipment-id').value;
-        if (!id) return;
-
-        if (!confirm('Are you sure you want to delete this equipment? This will also delete all associated images.')) return;
+        var id = document.getElementById('gear-id').value;
+        if (!id || !confirm('Delete this listing and all its photos?')) return;
 
         deleteBtn.textContent = 'Deleting...';
         deleteBtn.disabled = true;
 
-        // First get all images to delete from storage
         supabase.from('equipment_images').select('storage_path').eq('equipment_id', id)
-            .then(function (imgResponse) {
-                var paths = (imgResponse.data || []).map(function (img) { return img.storage_path; });
-
-                // Delete image records
+            .then(function (r) {
+                var paths = (r.data || []).map(function (img) { return img.storage_path; });
                 return supabase.from('equipment_images').delete().eq('equipment_id', id)
                     .then(function () {
-                        // Delete from storage
-                        if (paths.length > 0) {
-                            return supabase.storage.from('equipment-photos').remove(paths);
-                        }
+                        if (paths.length > 0) return supabase.storage.from('equipment-photos').remove(paths);
                     })
                     .then(function () {
-                        // Delete equipment
                         return supabase.from('equipment').delete().eq('id', id);
                     });
             })
-            .then(function (response) {
-                if (response && response.error) {
-                    showAlert('Error deleting: ' + response.error.message, 'error');
-                    deleteBtn.textContent = 'Delete';
-                    deleteBtn.disabled = false;
-                    return;
-                }
-
-                showAlert('Equipment deleted', 'success');
-                formView.style.display = 'none';
-                listView.style.display = 'block';
-                loadEquipment();
+            .then(function () {
+                showToast('Deleted');
+                showList();
             })
             .catch(function (err) {
-                showAlert('Error deleting: ' + err.message, 'error');
-                deleteBtn.textContent = 'Delete';
+                showToast('Error deleting: ' + err.message, 'error');
+                deleteBtn.textContent = 'Delete This Listing';
                 deleteBtn.disabled = false;
             });
     });
@@ -441,11 +470,4 @@
     // Init
     // ========================================
     checkSession();
-
-    // Listen for auth changes
-    supabase.auth.onAuthStateChange(function (event) {
-        if (event === 'SIGNED_OUT') {
-            showLogin();
-        }
-    });
 })();
