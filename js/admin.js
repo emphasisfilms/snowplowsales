@@ -102,7 +102,7 @@
         listSection.style.display = 'block';
         formSection.style.display = 'none';
         backBtn.style.display = 'none';
-        appTitle.textContent = 'Equipment';
+        appTitle.textContent = 'Equipment Inventory';
         loadGear();
     }
 
