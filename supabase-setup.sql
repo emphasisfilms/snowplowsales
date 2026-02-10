@@ -125,3 +125,74 @@ INSERT INTO equipment (title, description, condition, status, manufacturer, mode
     ('Toro Power Clear e21 60V Snow Blower', '21" clearing width, 60V battery powered, single stage', 'new', 'active', 'Toro', 'Power Clear e21', 6),
     ('Fisher 7.5'' SD Straight Blade', 'Used, good condition. Call for details.', 'used', 'active', 'Fisher', 'SD', 7),
     ('Fisher Steel-Caster 1.5 yd Spreader', 'Used, serviced and ready to go. Call for pricing.', 'used', 'active', 'Fisher', 'Steel-Caster', 8);
+
+-- ========================================
+-- SITE SETTINGS TABLE (key-value with JSONB)
+-- ========================================
+
+CREATE TABLE site_settings (
+    key TEXT PRIMARY KEY,
+    value JSONB NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+-- Public can read site settings
+CREATE POLICY "Public can read site settings"
+    ON site_settings FOR SELECT
+    TO anon
+    USING (true);
+
+-- Authenticated users have full access
+CREATE POLICY "Authenticated full access to site settings"
+    ON site_settings FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Seed: site alert (off by default)
+INSERT INTO site_settings (key, value) VALUES
+    ('site_alert', '{"active": false, "message": "", "type": "info"}'::jsonb),
+    ('business_hours', '{
+        "monday": {"open": "8:00 AM", "close": "5:00 PM", "closed": false},
+        "tuesday": {"open": "8:00 AM", "close": "5:00 PM", "closed": false},
+        "wednesday": {"open": "8:00 AM", "close": "5:00 PM", "closed": false},
+        "thursday": {"open": "8:00 AM", "close": "5:00 PM", "closed": false},
+        "friday": {"open": "8:00 AM", "close": "5:00 PM", "closed": false},
+        "saturday": {"open": "8:00 AM", "close": "12:00 PM", "closed": false},
+        "sunday": {"open": "", "close": "", "closed": true},
+        "special_note": ""
+    }'::jsonb);
+
+-- ========================================
+-- MESSAGES TABLE (contact form inbox)
+-- ========================================
+
+CREATE TABLE messages (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    message TEXT,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_messages_created ON messages(created_at DESC);
+CREATE INDEX idx_messages_read ON messages(is_read);
+
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+
+-- Public can insert messages (contact form)
+CREATE POLICY "Public can insert messages"
+    ON messages FOR INSERT
+    TO anon
+    WITH CHECK (true);
+
+-- Authenticated users have full access
+CREATE POLICY "Authenticated full access to messages"
+    ON messages FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);

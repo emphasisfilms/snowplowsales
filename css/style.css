@@ -1491,6 +1491,11 @@ h3 {
     to { transform: rotate(360deg); }
 }
 
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
 .inventory-loading,
 .inventory-empty {
     grid-column: 1 / -1;

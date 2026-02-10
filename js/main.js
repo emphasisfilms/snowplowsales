@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Contact Form Handler
+    // Contact Form Handler - dual submission to Supabase + Formspree
     var contactForm = document.querySelector('.contact-form form');
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
@@ -71,15 +71,38 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.textContent = 'Sending...';
             btn.disabled = true;
 
-            // Simulate form submission - replace with actual endpoint
-            setTimeout(function () {
+            var formData = new FormData(contactForm);
+            var name = formData.get('name') || '';
+            var email = formData.get('email') || '';
+            var phone = formData.get('phone') || '';
+            var message = formData.get('message') || '';
+
+            // Submit to Formspree (email notifications)
+            var formspreePromise = fetch('https://formspree.io/f/xjgekayw', {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            }).catch(function () { /* Formspree failure is non-blocking */ });
+
+            // Submit to Supabase messages table (CRM inbox)
+            var supabasePromise = Promise.resolve();
+            if (typeof supabase !== 'undefined') {
+                supabasePromise = supabase.from('messages').insert({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    message: message
+                }).then(function () {}).catch(function () {});
+            }
+
+            Promise.all([formspreePromise, supabasePromise]).then(function () {
                 btn.textContent = 'Message Sent!';
                 contactForm.reset();
                 setTimeout(function () {
                     btn.textContent = originalText;
                     btn.disabled = false;
                 }, 3000);
-            }, 1000);
+            });
         });
     }
 
