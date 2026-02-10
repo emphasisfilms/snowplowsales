@@ -52,7 +52,14 @@
     function showApp() {
         loginScreen.style.display = 'none';
         app.style.display = 'block';
-        showList();
+        if (window.location.search.indexOf('new') !== -1) {
+            resetForm();
+            appTitle.textContent = 'Add Gear';
+            deleteBtn.style.display = 'none';
+            showForm();
+        } else {
+            showList();
+        }
     }
 
     loginBtn.addEventListener('click', function () {
