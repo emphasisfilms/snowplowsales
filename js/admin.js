@@ -369,16 +369,50 @@
     });
 
     photoInput.addEventListener('change', function () {
-        Array.from(this.files).forEach(function (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('Photo too large (max 5MB)', 'error');
-                return;
-            }
-            pendingFiles.push(file);
-        });
+        var files = Array.from(this.files);
         photoInput.value = '';
-        renderPhotos();
+        var processed = 0;
+        files.forEach(function (file) {
+            if (file.size > 4.5 * 1024 * 1024) {
+                resizeImage(file, 2000, 0.85).then(function (resized) {
+                    pendingFiles.push(resized);
+                    processed++;
+                    if (processed === files.length) renderPhotos();
+                });
+            } else {
+                pendingFiles.push(file);
+                processed++;
+                if (processed === files.length) renderPhotos();
+            }
+        });
     });
+
+    function resizeImage(file, maxDim, quality) {
+        return new Promise(function (resolve) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = new Image();
+                img.onload = function () {
+                    var w = img.width;
+                    var h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                        else { w = Math.round(w * maxDim / h); h = maxDim; }
+                    }
+                    var canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    canvas.toBlob(function (blob) {
+                        var resized = new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' });
+                        resolve(resized);
+                    }, 'image/jpeg', quality);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
     function renderPhotos() {
         var items = photoGrid.querySelectorAll('.photo-thumb');
