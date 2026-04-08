@@ -33,6 +33,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Parallax - image scrolls at half speed
+    var parallaxSection = document.querySelector('.fisher-lineup');
+    var parallaxImg = parallaxSection ? parallaxSection.querySelector('img') : null;
+    if (parallaxSection && parallaxImg) {
+        window.addEventListener('scroll', function () {
+            var rect = parallaxSection.getBoundingClientRect();
+            if (rect.bottom > 0 && rect.top < window.innerHeight) {
+                var center = rect.top + rect.height / 2 - window.innerHeight / 2;
+                var offset = center * -0.15;
+                parallaxImg.style.transform = 'translateY(calc(-50% + ' + offset + 'px))';
+            }
+        });
+    }
+
     // Smooth Scrolling for Anchor Links
     document.querySelectorAll('a[href^="/#"]').forEach(function (anchor) {
         anchor.addEventListener('click', function (e) {
