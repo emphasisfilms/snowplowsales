@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (rect.bottom > 0 && rect.top < window.innerHeight) {
                 var center = rect.top + rect.height / 2 - window.innerHeight / 2;
                 var offset = center * -0.15;
-                parallaxImg.style.transform = 'translateY(calc(-50% + ' + offset + 'px))';
+                parallaxImg.style.transform = 'translate(-50%, calc(-50% + ' + offset + 'px))';
             }
         });
     }
