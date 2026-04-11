@@ -61,7 +61,7 @@
         <div class="container">
             <div class="contact-page-grid">
                 <!-- Contact Form -->
-                <div class="contact-form">
+                <div class="contact-form" id="message-form">
                     <h2>Send Us a Message</h2>
                     <form action="https://formspree.io/f/xjgekayw" method="POST">
                         <div class="form-group">
@@ -170,6 +170,14 @@
         if (product) {
             var msg = document.getElementById('message');
             if (msg) msg.value = "I'm interested in the " + product + ". Is it still available?";
+        }
+        if (window.location.hash === '#message-form') {
+            var form = document.getElementById('message-form');
+            if (form) {
+                setTimeout(function() {
+                    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
         }
     })();
     </script>
