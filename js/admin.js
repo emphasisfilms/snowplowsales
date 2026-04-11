@@ -75,6 +75,7 @@
         if (section === 'messages') loadMessages();
         if (section === 'alert') loadAlert();
         if (section === 'hours') loadHours();
+        if (section === 'products') { showProductList(); }
     }
 
     // Dashboard nav click handlers
@@ -286,7 +287,11 @@
     });
 
     backBtn.addEventListener('click', function () {
-        showList();
+        if (currentSection === 'products') {
+            showProductList();
+        } else {
+            showList();
+        }
     });
 
     function showForm() {
@@ -855,6 +860,298 @@
         var div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    }
+
+    // ========================================
+    // Products Management
+    // ========================================
+    var productListView = document.getElementById('product-list-view');
+    var productFormView = document.getElementById('product-form-view');
+    var productList = document.getElementById('product-list');
+    var newProductBtn = document.getElementById('new-product-btn');
+    var saveProductBtn = document.getElementById('save-product-btn');
+    var deleteProductBtn = document.getElementById('delete-product-btn');
+    var productPhotoInput = document.getElementById('product-photo-input');
+    var productPhotoBtn = document.getElementById('product-photo-btn');
+    var productPhotoGrid = document.getElementById('product-photo-grid');
+
+    var currentBrand = 'fisher';
+    var currentProducts = [];
+    var pendingProductPhoto = null;
+    var existingProductPhoto = null;
+
+    // Brand tab handlers
+    document.querySelectorAll('.product-brand-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('.product-brand-tab').forEach(function (t) { t.classList.remove('active'); });
+            this.classList.add('active');
+            currentBrand = this.getAttribute('data-brand');
+            loadProducts();
+        });
+    });
+
+    function showProductList() {
+        productListView.style.display = 'block';
+        productFormView.style.display = 'none';
+        backBtn.style.display = 'none';
+        dashNav.style.display = 'flex';
+        appTitle.textContent = 'Dashboard';
+        loadProducts();
+    }
+
+    function showProductForm() {
+        productListView.style.display = 'none';
+        productFormView.style.display = 'block';
+        backBtn.style.display = 'inline-block';
+        dashNav.style.display = 'none';
+        window.scrollTo(0, 0);
+    }
+
+    function loadProducts() {
+        productList.innerHTML = '<div style="text-align:center;padding:40px;color:#8a8478;"><div class="loading-anim"></div>Loading...</div>';
+
+        supabase.from('site_settings').select('value').eq('key', 'products_' + currentBrand).single()
+            .then(function (r) {
+                if (r.error || !r.data || !r.data.value || !r.data.value.products) {
+                    currentProducts = [];
+                    productList.innerHTML = '<div class="list-empty">No products yet. Tap + Add Product below.</div>';
+                    return;
+                }
+
+                currentProducts = r.data.value.products;
+                if (currentProducts.length === 0) {
+                    productList.innerHTML = '<div class="list-empty">No products yet. Tap + Add Product below.</div>';
+                    return;
+                }
+
+                productList.innerHTML = '';
+                currentProducts.forEach(function (product, index) {
+                    var card = document.createElement('div');
+                    card.className = 'gear-card';
+
+                    var thumbHtml = '<div class="gear-card-thumb">No Photo</div>';
+                    if (product.photo) {
+                        var url = getImageUrl(product.photo);
+                        thumbHtml = '<div class="gear-card-thumb"><img src="' + url + '" alt=""></div>';
+                    }
+
+                    card.innerHTML = thumbHtml +
+                        '<div class="gear-card-info">' +
+                            '<h4>' + escapeHtml(product.name) + '</h4>' +
+                            '<p>' + escapeHtml((product.description || '').substring(0, 80)) + '</p>' +
+                        '</div>';
+
+                    card.addEventListener('click', function () { editProduct(index); });
+                    productList.appendChild(card);
+                });
+            });
+    }
+
+    newProductBtn.addEventListener('click', function () {
+        resetProductForm();
+        appTitle.textContent = 'Add Product';
+        deleteProductBtn.style.display = 'none';
+        showProductForm();
+    });
+
+    function resetProductForm() {
+        document.getElementById('product-form').reset();
+        document.getElementById('product-idx').value = '';
+        pendingProductPhoto = null;
+        existingProductPhoto = null;
+        renderProductPhoto();
+    }
+
+    function editProduct(index) {
+        var product = currentProducts[index];
+        if (!product) return;
+
+        resetProductForm();
+        appTitle.textContent = 'Edit Product';
+        deleteProductBtn.style.display = 'block';
+        showProductForm();
+
+        document.getElementById('product-idx').value = index;
+        document.getElementById('p-name').value = product.name || '';
+        document.getElementById('p-description').value = product.description || '';
+        document.getElementById('p-url').value = product.url || '';
+
+        if (product.photo) {
+            existingProductPhoto = product.photo;
+        }
+        renderProductPhoto();
+    }
+
+    // Product photo handling
+    productPhotoBtn.addEventListener('click', function () {
+        productPhotoInput.click();
+    });
+
+    productPhotoInput.addEventListener('change', function () {
+        var file = this.files[0];
+        productPhotoInput.value = '';
+        if (!file) return;
+
+        if (file.size > 4.5 * 1024 * 1024) {
+            resizeImage(file, 2000, 0.85).then(function (resized) {
+                pendingProductPhoto = resized;
+                renderProductPhoto();
+            });
+        } else {
+            pendingProductPhoto = file;
+            renderProductPhoto();
+        }
+    });
+
+    function renderProductPhoto() {
+        var thumbs = productPhotoGrid.querySelectorAll('.photo-thumb');
+        thumbs.forEach(function (el) { el.remove(); });
+        productPhotoBtn.style.display = '';
+
+        if (existingProductPhoto) {
+            var div = document.createElement('div');
+            div.className = 'photo-thumb';
+            var url = getImageUrl(existingProductPhoto);
+            div.innerHTML = '<img src="' + url + '" alt="">' +
+                '<button type="button" class="photo-remove">&times;</button>';
+            productPhotoGrid.insertBefore(div, productPhotoBtn);
+            productPhotoBtn.style.display = 'none';
+
+            div.querySelector('.photo-remove').addEventListener('click', function (e) {
+                e.stopPropagation();
+                existingProductPhoto = null;
+                renderProductPhoto();
+            });
+        } else if (pendingProductPhoto) {
+            var div = document.createElement('div');
+            div.className = 'photo-thumb';
+            div.innerHTML = '<div style="width:100%;height:100%;background:#222;display:flex;align-items:center;justify-content:center;color:#8a8478;font-size:0.7rem;">Loading...</div>' +
+                '<button type="button" class="photo-remove">&times;</button>';
+            productPhotoGrid.insertBefore(div, productPhotoBtn);
+            productPhotoBtn.style.display = 'none';
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var imgEl = document.createElement('img');
+                imgEl.src = e.target.result;
+                imgEl.alt = '';
+                div.querySelector('div').replaceWith(imgEl);
+            };
+            reader.readAsDataURL(pendingProductPhoto);
+
+            div.querySelector('.photo-remove').addEventListener('click', function (e) {
+                e.stopPropagation();
+                pendingProductPhoto = null;
+                renderProductPhoto();
+            });
+        }
+    }
+
+    function uploadProductPhoto(brand, productId) {
+        if (!pendingProductPhoto) return Promise.resolve(existingProductPhoto);
+
+        var ext = pendingProductPhoto.name.split('.').pop().toLowerCase();
+        var path = 'products/' + brand + '/' + productId + '-' + Date.now() + '.' + ext;
+
+        return supabase.storage.from('equipment-photos').upload(path, pendingProductPhoto, { contentType: pendingProductPhoto.type })
+            .then(function (r) {
+                if (r.error) throw new Error(r.error.message);
+                return path;
+            });
+    }
+
+    // Save product
+    saveProductBtn.addEventListener('click', function () {
+        var name = document.getElementById('p-name').value.trim();
+        if (!name) {
+            showToast('Product name is required', 'error');
+            return;
+        }
+
+        saveProductBtn.disabled = true;
+        saveProductBtn.textContent = 'Saving...';
+
+        var idx = document.getElementById('product-idx').value;
+        var isEdit = idx !== '';
+        var productId = isEdit ? (currentProducts[parseInt(idx)].id || generateId()) : generateId();
+
+        // Delete old photo from storage if replaced
+        var oldPhoto = isEdit ? currentProducts[parseInt(idx)].photo : null;
+        var photoChanged = pendingProductPhoto !== null || (isEdit && existingProductPhoto !== oldPhoto);
+
+        uploadProductPhoto(currentBrand, productId).then(function (photoPath) {
+            var product = {
+                id: productId,
+                name: name,
+                description: document.getElementById('p-description').value.trim(),
+                url: document.getElementById('p-url').value.trim(),
+                photo: photoPath || null
+            };
+
+            // Update products array
+            var products = currentProducts.slice();
+            if (isEdit) {
+                products[parseInt(idx)] = product;
+            } else {
+                products.push(product);
+            }
+
+            // Delete old photo if it was replaced
+            if (oldPhoto && photoChanged && pendingProductPhoto) {
+                supabase.storage.from('equipment-photos').remove([oldPhoto]);
+            }
+
+            return supabase.from('site_settings')
+                .upsert({ key: 'products_' + currentBrand, value: { products: products }, updated_at: new Date().toISOString() });
+        }).then(function (r) {
+            saveProductBtn.disabled = false;
+            saveProductBtn.textContent = 'Save Product';
+            if (r.error) {
+                showToast('Error: ' + r.error.message, 'error');
+                return;
+            }
+            showToast(isEdit ? 'Product updated!' : 'Product added!');
+            showProductList();
+        }).catch(function (err) {
+            saveProductBtn.disabled = false;
+            saveProductBtn.textContent = 'Save Product';
+            showToast('Error: ' + err.message, 'error');
+        });
+    });
+
+    // Delete product
+    deleteProductBtn.addEventListener('click', function () {
+        var idx = document.getElementById('product-idx').value;
+        if (idx === '' || !confirm('Delete this product?')) return;
+
+        deleteProductBtn.disabled = true;
+        deleteProductBtn.textContent = 'Deleting...';
+
+        var product = currentProducts[parseInt(idx)];
+        var products = currentProducts.slice();
+        products.splice(parseInt(idx), 1);
+
+        // Delete photo from storage
+        if (product.photo) {
+            supabase.storage.from('equipment-photos').remove([product.photo]);
+        }
+
+        supabase.from('site_settings')
+            .upsert({ key: 'products_' + currentBrand, value: { products: products }, updated_at: new Date().toISOString() })
+            .then(function (r) {
+                deleteProductBtn.disabled = false;
+                deleteProductBtn.textContent = 'Delete This Product';
+                if (r.error) {
+                    showToast('Error deleting', 'error');
+                    return;
+                }
+                showToast('Product deleted');
+                showProductList();
+            });
+    });
+
+    function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
     }
 
     // ========================================

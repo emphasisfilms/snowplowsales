@@ -196,3 +196,15 @@ CREATE POLICY "Authenticated full access to messages"
     TO authenticated
     USING (true)
     WITH CHECK (true);
+
+-- ========================================
+-- PRODUCT LISTINGS (stored in site_settings)
+-- Uses keys: products_fisher, products_toro
+-- Photos stored in equipment-photos bucket under products/ prefix
+-- ========================================
+
+-- Seed: Fisher products (empty, managed via admin dashboard)
+INSERT INTO site_settings (key, value) VALUES
+    ('products_fisher', '{"products": []}'::jsonb),
+    ('products_toro', '{"products": []}'::jsonb)
+ON CONFLICT (key) DO NOTHING;

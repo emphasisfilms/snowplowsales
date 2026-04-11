@@ -1079,6 +1079,73 @@ h3 {
     border-radius: 1px;
 }
 
+/* Product Cards (dynamic catalog) */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 48px;
+}
+
+.product-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all var(--transition);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.product-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+}
+
+.product-card-photo {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+    background: var(--color-bg);
+}
+
+.product-card-body {
+    padding: 24px;
+}
+
+.product-card-body h3 {
+    color: var(--color-text-bright);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.product-card-body p {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.product-card-link {
+    display: inline-block;
+    margin-top: 12px;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-grid-loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-text-light);
+}
+
 .page-cta {
     padding: 80px 0;
     background: var(--color-bg-card);

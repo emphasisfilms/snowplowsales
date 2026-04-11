@@ -886,6 +886,29 @@
             display: inline-block;
         }
 
+        /* Product brand tabs - reuse view-tab */
+        .product-brand-tab {
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .product-brand-tab.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(212, 160, 23, 0.1);
+        }
+
         .section-title {
             font-size: 0.85rem;
             font-weight: 700;
@@ -941,6 +964,7 @@
             <button class="dash-nav-btn" data-section="messages">Messages</button>
             <button class="dash-nav-btn" data-section="alert">Alert Banner</button>
             <button class="dash-nav-btn" data-section="hours">Store Hours</button>
+            <button class="dash-nav-btn" data-section="products">Products</button>
         </nav>
 
         <div id="toast" class="toast"></div>
@@ -1148,6 +1172,69 @@
             </div>
 
             <button type="button" id="save-hours-btn" class="btn btn-accent" style="margin-top:12px;">Save Hours</button>
+        </div>
+
+        <!-- Products Section -->
+        <div id="section-products" class="dash-section">
+            <h2 class="section-title">Product Listings</h2>
+            <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:16px;">Manage the products shown on your Fisher and Toro pages. Add photos and links for each product.</p>
+
+            <!-- Brand Tabs -->
+            <div id="product-list-view">
+                <div class="view-tabs" style="grid-template-columns: 1fr 1fr;">
+                    <button class="product-brand-tab active" data-brand="fisher">Fisher</button>
+                    <button class="product-brand-tab" data-brand="toro">Toro</button>
+                </div>
+                <div id="product-list" class="list-view"></div>
+                <div class="submit-area">
+                    <button id="new-product-btn" class="btn btn-accent">+ Add Product</button>
+                </div>
+            </div>
+
+            <!-- Product Form -->
+            <div id="product-form-view" style="display:none;">
+                <form id="product-form" class="gear-form">
+                    <input type="hidden" id="product-idx" value="">
+
+                    <div class="field">
+                        <label>Product Name</label>
+                        <input type="text" id="p-name" placeholder="e.g. Homesteader" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Description</label>
+                        <textarea id="p-description" placeholder="Brief product description..." rows="3"></textarea>
+                    </div>
+
+                    <div class="field">
+                        <label>Link URL</label>
+                        <input type="url" id="p-url" placeholder="https://www.fisherplows.com/products/...">
+                    </div>
+
+                    <div class="photos-section">
+                        <h3>Product Photo</h3>
+                        <div id="product-photo-grid" class="photo-grid" style="grid-template-columns: repeat(2, 1fr);">
+                            <button type="button" id="product-photo-btn" class="add-photo-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="3"/>
+                                    <circle cx="12" cy="13" r="3"/>
+                                    <path d="M7 7h.01M17 7h.01"/>
+                                </svg>
+                                <span>Add Photo</span>
+                            </button>
+                        </div>
+                        <input type="file" id="product-photo-input" accept="image/*" style="display:none;">
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <button type="button" id="delete-product-btn" class="btn btn-danger" style="display:none;">Delete This Product</button>
+                    </div>
+                </form>
+
+                <div class="submit-area">
+                    <button type="button" id="save-product-btn" class="btn btn-accent">Save Product</button>
+                </div>
+            </div>
         </div>
     </div>
 
