@@ -164,5 +164,14 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
     <script src="js/site-settings.js"></script>
+    <script>
+    (function() {
+        var product = new URLSearchParams(window.location.search).get('product');
+        if (product) {
+            var msg = document.getElementById('message');
+            if (msg) msg.value = "I'm interested in the " + product + ". Is it still available?";
+        }
+    })();
+    </script>
 </body>
 </html>

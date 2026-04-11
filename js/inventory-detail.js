@@ -129,6 +129,12 @@
 
             document.getElementById('detail-description').textContent = item.description || '';
 
+            // Update "Send a Message" link with product info
+            var messageLink = document.querySelector('.detail-cta .btn-secondary');
+            if (messageLink) {
+                messageLink.href = '/contact.html?product=' + encodeURIComponent(item.title);
+            }
+
             renderGallery(item.equipment_images);
             renderSpecs(item);
             showContent();
