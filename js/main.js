@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Contact Form Handler - dual submission to Supabase + Formspree
+    // Contact Form Handler - submits to /api/messages (Supabase inbox + owner email)
     var contactForm = document.querySelector('.contact-form form');
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
@@ -86,36 +86,30 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.disabled = true;
 
             var formData = new FormData(contactForm);
-            var name = formData.get('name') || '';
-            var email = formData.get('email') || '';
-            var phone = formData.get('phone') || '';
-            var message = formData.get('message') || '';
 
-            // Submit to Formspree (email notifications)
-            var formspreePromise = fetch('https://formspree.io/f/xjgekayw', {
+            fetch('/api/messages', {
                 method: 'POST',
-                body: formData,
-                headers: { 'Accept': 'application/json' }
-            }).catch(function () { /* Formspree failure is non-blocking */ });
-
-            // Submit to Supabase messages table (CRM inbox)
-            var supabasePromise = Promise.resolve();
-            if (typeof supabase !== 'undefined') {
-                supabasePromise = supabase.from('messages').insert({
-                    name: name,
-                    email: email,
-                    phone: phone,
-                    message: message
-                }).then(function () {}).catch(function () {});
-            }
-
-            Promise.all([formspreePromise, supabasePromise]).then(function () {
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.get('name') || '',
+                    email: formData.get('email') || '',
+                    phone: formData.get('phone') || '',
+                    message: formData.get('message') || ''
+                })
+            }).then(function (res) {
+                if (!res.ok) throw new Error('submit failed');
                 btn.textContent = 'Message Sent!';
                 contactForm.reset();
                 setTimeout(function () {
                     btn.textContent = originalText;
                     btn.disabled = false;
                 }, 3000);
+            }).catch(function () {
+                btn.textContent = 'Something went wrong — please call us';
+                setTimeout(function () {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }, 4000);
             });
         });
     }
