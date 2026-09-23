@@ -884,6 +884,9 @@
             box.innerHTML = '<h3>' + group.title + '</h3>';
             group.fields.forEach(function (f) {
                 var val = hget(homeData, f.key);
+                var dflt = hget(window.HOME_DEFAULTS || {}, f.key);
+                var usingDefault = (val === undefined || val === null || val === '');
+                if (usingDefault) val = dflt;
                 var wrap = document.createElement('div');
                 wrap.className = 'field';
                 if (f.type === 'checkbox') {
@@ -898,7 +901,7 @@
                             '<img src="' + (url || '') + '" alt="" data-preview="' + f.key + '"' + (url ? '' : ' style="opacity:.25"') + '>' +
                             '<div><button type="button" class="btn btn-accent" data-pick="' + f.key + '">Choose photo</button>' +
                             '<button type="button" class="btn" data-clear="' + f.key + '" style="margin-left:6px;">Use default</button>' +
-                            '<br><small data-name="' + f.key + '">' + (val ? 'Current: ' + val.split('/').pop() : 'Using built-in default') + '</small></div>' +
+                            '<br><small data-name="' + f.key + '">' + (val ? (usingDefault ? 'Built-in default: ' : 'Your upload: ') + val.split('/').pop() : 'No photo') + '</small></div>' +
                             '<input type="file" accept="image/*" data-file="' + f.key + '" style="display:none;">' +
                         '</div>';
                 } else {
@@ -932,9 +935,10 @@
                 var key = btn.getAttribute('data-clear');
                 delete homePendingImages[key];
                 hset(homeData, key, '');
+                var dflt = hget(window.HOME_DEFAULTS || {}, key) || '';
                 var img = homeEditorEl.querySelector('img[data-preview="' + key + '"]');
-                img.src = ''; img.style.opacity = '.25';
-                homeEditorEl.querySelector('small[data-name="' + key + '"]').textContent = 'Using built-in default';
+                img.src = homeImageUrl(dflt); img.style.opacity = dflt ? '1' : '.25';
+                homeEditorEl.querySelector('small[data-name="' + key + '"]').textContent = dflt ? 'Built-in default: ' + dflt.split('/').pop() : 'No photo';
             });
         });
     }
