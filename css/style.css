@@ -151,7 +151,7 @@ h4 { font-size: 0.95rem; letter-spacing: 2px; }
 /* ---------- Utility bar ---------- */
 .utility { background: var(--ink); color: #bdbdbd; font-size: 0.8rem; }
 .utility .container { display: flex; justify-content: space-between; align-items: center; min-height: 36px; gap: 16px; }
-.utility a { color: #fff; font-weight: 600; }
+.utility a { color: #fff; font-weight: 600; white-space: nowrap; }
 .utility a:hover { color: var(--accent); }
 .utility .dot { margin: 0 10px; opacity: .4; }
 
@@ -590,6 +590,7 @@ h4 { font-size: 0.95rem; letter-spacing: 2px; }
     .nav-dropdown-menu a { padding: 9px 24px; }
     .nav-links .nav-cta { margin: 10px 24px 0; text-align: center; }
     .utility .container > span:first-child { display: none; }
+    .utility .container { justify-content: center; }
     .brand-grid, .news-grid, .quotes, .welcome-grid, .loc-grid, .contact-page-grid, .detail-layout { grid-template-columns: 1fr; }
     .quick-grid { grid-template-columns: 1fr 1fr; }
     .promo-banner { grid-template-columns: 1fr; }
@@ -601,6 +602,8 @@ h4 { font-size: 0.95rem; letter-spacing: 2px; }
     .hero-signage { width: 150px; left: 20px; bottom: 14px; }
 }
 @media (max-width: 560px) {
+    .utility-tag { display: none; }
+    .utility { font-size: .85rem; }
     .nav-logo img { height: 26px; }
     .nav { min-height: 64px; gap: 12px; }
     .cat-grid { grid-template-columns: repeat(2, 1fr); }
