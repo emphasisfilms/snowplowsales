@@ -78,6 +78,9 @@ All three are admin-managed.
 ## Location block
 ✅ Address, phone, map are real. Hours come from Admin → Store Hours, and the "Open now" badge is computed from them.
 
+## Brand pages
+✅ Lineups on the Fisher, Toro and STIHL pages are built into the site (not admin-managed). When a manufacturer adds or drops a model, ask for the page to be updated.
+
 ## Brand partners strip
 ✅ Fisher, Toro, STIHL (official logo), Salt Flap. Add BackRack logo if you want it shown (currently text).
 
