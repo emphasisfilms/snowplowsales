@@ -41,18 +41,18 @@
         errorEl.style.display = 'block';
         // Sold / removed listings should drop out of the index.
         setRobots('noindex, follow');
-        document.title = 'Equipment Not Found | Snow Plow Sales';
+        document.title = 'Equipment Not Found | Snowplow Sales';
     }
 
     // SEO: page metadata + schema.org Product for this listing
     function applySeo(item, images) {
         var url = SITE_ORIGIN + '/inventory/' + item.id;
         var condition = item.condition === 'new' ? 'New' : 'Used';
-        var title = item.title + ' | ' + condition + ' | Snow Plow Sales, Walpole NH';
+        var title = item.title + ' | ' + condition + ' | Snowplow Sales, Walpole NH';
         var descText = (item.description || '').replace(/\s+/g, ' ').trim();
         var snippet = descText.slice(0, 110);
         if (snippet && !/[.!?]$/.test(snippet)) snippet += '.';
-        var description = condition + ' ' + item.title + ' for sale at Snow Plow Sales in Walpole, NH.' +
+        var description = condition + ' ' + item.title + ' for sale at Snowplow Sales in Walpole, NH.' +
             (snippet ? ' ' + snippet : '') + ' Call 603-352-6855.';
 
         document.title = title;
@@ -156,7 +156,7 @@
         // Set main image
         var mainUrl = getImageUrl(sorted[0].storage_path);
         mainImg.src = mainUrl;
-        mainImg.alt = sorted[0].alt_text || (document.getElementById('detail-title').textContent || 'Equipment') + ' at Snow Plow Sales, Walpole NH';
+        mainImg.alt = sorted[0].alt_text || (document.getElementById('detail-title').textContent || 'Equipment') + ' at Snowplow Sales, Walpole NH';
         mainImg.style.display = 'block';
         placeholder.style.display = 'none';
 
@@ -216,7 +216,7 @@
             hiddenEl.style.display = 'block';
         }
         setRobots('noindex, follow');
-        document.title = 'Online Inventory Coming Soon | Snow Plow Sales';
+        document.title = 'Online Inventory Coming Soon | Snowplow Sales';
     }
 
     getInventoryVisibility().then(function (vis) {

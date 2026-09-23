@@ -76,6 +76,7 @@
         if (section === 'messages') loadMessages();
         if (section === 'alert') loadAlert();
         if (section === 'hours') loadHours();
+        if (section === 'home') loadHome();
         if (section === 'products') { showProductList(); }
     }
 
@@ -733,6 +734,226 @@
     }
 
     // ========================================
+    // Homepage Content editor
+    // site_settings.home_content — read by redesign/home.js.
+    // Schema-driven: add a field here and it appears in the editor.
+    // Image values are storage paths in equipment-photos (home/...) or
+    // site paths starting with "/" for built-in assets.
+    // ========================================
+    var HOME_SCHEMA = [
+        { title: 'Hero banner', fields: [
+            { key: 'hero.eyebrow', label: 'Small line above the headline', type: 'text', ph: 'Fisher • Toro • STIHL • Walpole, NH' },
+            { key: 'hero.headline', label: 'Headline (wrap words in <em></em> to color them yellow)', type: 'text', ph: "New England's <em>Fisher Plow</em> Headquarters" },
+            { key: 'hero.sub', label: 'Subheadline', type: 'textarea', ph: 'Sales, installation, service and genuine parts under one roof in Walpole, NH. Family owned since 1970.' },
+            { key: 'hero.image', label: 'Background photo (wide, at least 1800px)', type: 'image' },
+            { key: 'hero.btn1_label', label: 'Button 1 text', type: 'text', ph: 'Shop Fisher Plows' },
+            { key: 'hero.btn1_url', label: 'Button 1 link', type: 'text', ph: '/products/fisher' },
+            { key: 'hero.btn2_label', label: 'Button 2 text', type: 'text', ph: 'Book an Installation' },
+            { key: 'hero.btn2_url', label: 'Button 2 link', type: 'text', ph: '/services' },
+            { key: 'hero.promo_active', label: 'Show the yellow promo tag in the corner', type: 'checkbox' },
+            { key: 'hero.promo_label', label: 'Promo tag text', type: 'text', ph: 'Pre-season plow specials →' },
+            { key: 'hero.promo_url', label: 'Promo tag link', type: 'text', ph: '/#promos' }
+        ]},
+        { title: 'Manufacturer promotion banner', fields: [
+            { key: 'promo.active', label: 'Show the promotion section', type: 'checkbox' },
+            { key: 'promo.tag', label: 'Small tag (brand • season)', type: 'text', ph: 'Toro • Snow season' },
+            { key: 'promo.title', label: 'Title', type: 'text', ph: 'Built for Winter' },
+            { key: 'promo.text', label: 'Text', type: 'textarea', ph: 'Toro single-stage and two-stage snow blowers are in stock...' },
+            { key: 'promo.btn_label', label: 'Button text', type: 'text', ph: 'See Offer' },
+            { key: 'promo.url', label: 'Link (manufacturer promo page or your contact page)', type: 'text', ph: 'https://www.toro.com/en/homeowner/promos-res' },
+            { key: 'promo.image', label: 'Promo artwork (from the Fisher / Toro / STIHL dealer portal)', type: 'image' }
+        ]},
+        { title: 'News card 1', fields: newsFields(0) },
+        { title: 'News card 2', fields: newsFields(1) },
+        { title: 'News card 3', fields: newsFields(2) },
+        { title: 'Customer review 1', fields: reviewFields(0) },
+        { title: 'Customer review 2', fields: reviewFields(1) },
+        { title: 'Customer review 3', fields: reviewFields(2) },
+        { title: 'Review links', fields: [
+            { key: 'reviews_all_url', label: 'Link to all your Google reviews', type: 'text', ph: 'https://g.page/...' },
+            { key: 'reviews_leave_url', label: '"Leave us a review" link', type: 'text', ph: 'https://g.page/r/.../review' }
+        ]},
+        { title: 'Video', fields: [
+            { key: 'video.url', label: 'YouTube link (section stays hidden until this is filled in)', type: 'text', ph: 'https://youtu.be/...' },
+            { key: 'video.caption', label: 'Caption', type: 'text', ph: 'Fisher XV2 install • 2:14' }
+        ]},
+        { title: 'Instagram', fields: [
+            { key: 'instagram.url', label: 'Instagram profile link', type: 'text', ph: 'https://www.instagram.com/snowplowsalesllc/' },
+            { key: 'instagram.photos.0', label: 'Photo 1', type: 'image' },
+            { key: 'instagram.photos.1', label: 'Photo 2', type: 'image' },
+            { key: 'instagram.photos.2', label: 'Photo 3', type: 'image' },
+            { key: 'instagram.photos.3', label: 'Photo 4', type: 'image' }
+        ]}
+    ];
+
+    function newsFields(i) {
+        return [
+            { key: 'news.' + i + '.pill', label: 'Small label (New Brand / Promotion / In Stock)', type: 'text', ph: 'Promotion' },
+            { key: 'news.' + i + '.title', label: 'Title (leave blank to hide this card)', type: 'text' },
+            { key: 'news.' + i + '.text', label: 'Text', type: 'textarea' },
+            { key: 'news.' + i + '.url', label: 'Link', type: 'text', ph: '/contact' },
+            { key: 'news.' + i + '.image', label: 'Photo', type: 'image' }
+        ];
+    }
+    function reviewFields(i) {
+        return [
+            { key: 'reviews.' + i + '.quote', label: 'Quote (leave blank to hide)', type: 'textarea' },
+            { key: 'reviews.' + i + '.name', label: 'Customer name', type: 'text', ph: 'Tim A.' },
+            { key: 'reviews.' + i + '.where', label: 'Town and source', type: 'text', ph: 'Keene, NH • Google review' }
+        ];
+    }
+
+    var homeEditorEl = document.getElementById('home-editor');
+    var saveHomeBtn = document.getElementById('save-home-btn');
+    var homeData = {};
+    var homePendingImages = {}; // key -> File
+
+    function hget(obj, path) {
+        return path.split('.').reduce(function (o, k) { return o == null ? undefined : o[k]; }, obj);
+    }
+    function hset(obj, path, value) {
+        var parts = path.split('.');
+        var o = obj;
+        for (var i = 0; i < parts.length - 1; i++) {
+            var k = parts[i];
+            var nextIsIndex = /^\d+$/.test(parts[i + 1]);
+            if (o[k] == null || typeof o[k] !== 'object') o[k] = nextIsIndex ? [] : {};
+            o = o[k];
+        }
+        o[parts[parts.length - 1]] = value;
+    }
+    function homeImageUrl(v) {
+        if (!v) return '';
+        if (/^(https?:)?\//.test(v)) return v;
+        return getImageUrl(v);
+    }
+
+    function buildHomeEditor() {
+        if (!homeEditorEl) return;
+        homeEditorEl.innerHTML = '';
+        homePendingImages = {};
+        HOME_SCHEMA.forEach(function (group) {
+            var box = document.createElement('div');
+            box.className = 'home-group';
+            box.innerHTML = '<h3>' + group.title + '</h3>';
+            group.fields.forEach(function (f) {
+                var val = hget(homeData, f.key);
+                var wrap = document.createElement('div');
+                wrap.className = 'field';
+                if (f.type === 'checkbox') {
+                    wrap.innerHTML = '<label class="home-check"><input type="checkbox" data-key="' + f.key + '"' + (val ? ' checked' : '') + '> ' + f.label + '</label>';
+                } else if (f.type === 'textarea') {
+                    wrap.innerHTML = '<label>' + f.label + '</label><textarea rows="3" data-key="' + f.key + '" placeholder="' + (f.ph || '') + '"></textarea>';
+                    wrap.querySelector('textarea').value = val || '';
+                } else if (f.type === 'image') {
+                    var url = homeImageUrl(val);
+                    wrap.innerHTML = '<label>' + f.label + '</label>' +
+                        '<div class="home-img">' +
+                            '<img src="' + (url || '') + '" alt="" data-preview="' + f.key + '"' + (url ? '' : ' style="opacity:.25"') + '>' +
+                            '<div><button type="button" class="btn btn-accent" data-pick="' + f.key + '">Choose photo</button>' +
+                            '<button type="button" class="btn" data-clear="' + f.key + '" style="margin-left:6px;">Use default</button>' +
+                            '<br><small data-name="' + f.key + '">' + (val ? 'Current: ' + val.split('/').pop() : 'Using built-in default') + '</small></div>' +
+                            '<input type="file" accept="image/*" data-file="' + f.key + '" style="display:none;">' +
+                        '</div>';
+                } else {
+                    wrap.innerHTML = '<label>' + f.label + '</label><input type="text" data-key="' + f.key + '" placeholder="' + (f.ph || '').replace(/"/g, '&quot;') + '">';
+                    wrap.querySelector('input').value = val || '';
+                }
+                box.appendChild(wrap);
+            });
+            homeEditorEl.appendChild(box);
+        });
+
+        homeEditorEl.querySelectorAll('[data-pick]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                homeEditorEl.querySelector('input[data-file="' + btn.getAttribute('data-pick') + '"]').click();
+            });
+        });
+        homeEditorEl.querySelectorAll('input[data-file]').forEach(function (inp) {
+            inp.addEventListener('change', function () {
+                var key = inp.getAttribute('data-file');
+                var file = inp.files && inp.files[0];
+                if (!file) return;
+                homePendingImages[key] = file;
+                var img = homeEditorEl.querySelector('img[data-preview="' + key + '"]');
+                img.src = URL.createObjectURL(file);
+                img.style.opacity = '1';
+                homeEditorEl.querySelector('small[data-name="' + key + '"]').textContent = 'New: ' + file.name + ' (uploads on save)';
+            });
+        });
+        homeEditorEl.querySelectorAll('[data-clear]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var key = btn.getAttribute('data-clear');
+                delete homePendingImages[key];
+                hset(homeData, key, '');
+                var img = homeEditorEl.querySelector('img[data-preview="' + key + '"]');
+                img.src = ''; img.style.opacity = '.25';
+                homeEditorEl.querySelector('small[data-name="' + key + '"]').textContent = 'Using built-in default';
+            });
+        });
+    }
+
+    function loadHome() {
+        if (!homeEditorEl) return;
+        homeEditorEl.innerHTML = '<p style="color:var(--text-light);font-size:0.8rem;">Loading...</p>';
+        supabase.from('site_settings').select('value').eq('key', 'home_content').maybeSingle()
+            .then(function (r) {
+                homeData = (r.data && r.data.value) || {};
+                buildHomeEditor();
+            });
+    }
+
+    function uploadHomeImage(key, file) {
+        return resizeImage(file, 1800, 0.85).then(function (resized) {
+            var path = 'home/' + key.replace(/\./g, '-') + '-' + Date.now() + '.jpg';
+            return supabase.storage.from('equipment-photos').upload(path, resized, { contentType: 'image/jpeg' })
+                .then(function (r) {
+                    if (r.error) throw new Error(r.error.message);
+                    return path;
+                });
+        });
+    }
+
+    if (saveHomeBtn) {
+        saveHomeBtn.addEventListener('click', function () {
+            saveHomeBtn.disabled = true;
+            saveHomeBtn.textContent = 'Saving...';
+
+            // Collect text + checkbox values
+            homeEditorEl.querySelectorAll('input[data-key], textarea[data-key]').forEach(function (el) {
+                var key = el.getAttribute('data-key');
+                hset(homeData, key, el.type === 'checkbox' ? el.checked : el.value.trim());
+            });
+
+            // Upload any new images, then save
+            var uploads = Object.keys(homePendingImages).map(function (key) {
+                return uploadHomeImage(key, homePendingImages[key]).then(function (path) {
+                    hset(homeData, key, path);
+                });
+            });
+
+            Promise.all(uploads)
+                .then(function () {
+                    return supabase.from('site_settings')
+                        .upsert({ key: 'home_content', value: homeData, updated_at: new Date().toISOString() });
+                })
+                .then(function (r) {
+                    if (r.error) throw new Error(r.error.message);
+                    homePendingImages = {};
+                    showToast('Homepage saved!');
+                    buildHomeEditor();
+                })
+                .catch(function (err) {
+                    showToast('Error saving: ' + err.message, 'error');
+                })
+                .then(function () {
+                    saveHomeBtn.disabled = false;
+                    saveHomeBtn.textContent = 'Save Homepage';
+                });
+        });
+    }
+
+    // ========================================
     // Hours Settings
     // ========================================
     var hoursEditorEl = document.getElementById('hours-editor');
@@ -864,7 +1085,7 @@
                                 '<button data-action="toggle-read" data-id="' + msg.id + '">' +
                                     (msg.is_read ? 'Mark Unread' : 'Mark Read') +
                                 '</button>' +
-                                (msg.email ? '<a href="mailto:' + escapeHtml(msg.email) + '?subject=Re: Your message to Snow Plow Sales">Reply</a>' : '') +
+                                (msg.email ? '<a href="mailto:' + escapeHtml(msg.email) + '?subject=Re: Your message to Snowplow Sales">Reply</a>' : '') +
                                 '<button data-action="delete-msg" data-id="' + msg.id + '" style="border-color:var(--red);color:var(--red);">Delete</button>' +
                             '</div>' +
                         '</div>';

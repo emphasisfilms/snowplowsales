@@ -1,5 +1,5 @@
 -- ========================================
--- Snow Plow Sales - Supabase Database Setup
+-- Snowplow Sales - Supabase Database Setup
 -- Run this in your Supabase SQL Editor
 -- ========================================
 

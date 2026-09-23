@@ -12,7 +12,7 @@
     <meta name="geo.placename" content="Walpole, New Hampshire">
     <meta name="geo.position" content="43.11295;-72.42779">
     <meta name="ICBM" content="43.11295, -72.42779">
-    <meta property="og:site_name" content="Snow Plow Sales">
+    <meta property="og:site_name" content="Snowplow Sales">
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Fisher Spreaders | Poly-Caster, Speed-Caster | Walpole, NH">
@@ -21,7 +21,7 @@
     <meta property="og:image" content="https://www.snowplowsales.com/assets/images/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Snow Plow Sales — Fisher &amp; Toro dealer in Walpole, NH">
+    <meta property="og:image:alt" content="Snowplow Sales — Fisher, Toro &amp; Stihl dealer in Walpole, NH">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Fisher Spreaders | Poly-Caster, Speed-Caster | Walpole, NH">
     <meta name="twitter:description" content="Fisher salt and sand spreaders sold and installed in Walpole, NH: Poly-Caster, Steel-Caster, Speed-Caster tailgate, walk-behind spreaders and liquid sprayers. Serving NH and VT.">
@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://mmkzpssjmkwrevgfebua.supabase.co">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/assets/images/icon.png">
     <link rel="apple-touch-icon" href="/assets/images/icon.png">
     <link rel="stylesheet" href="/css/style.css">
@@ -45,10 +45,14 @@
             "LocalBusiness"
           ],
           "@id": "https://www.snowplowsales.com/#business",
-          "name": "Snow Plow Sales",
-          "legalName": "Snow Plow Sales LLC",
-          "alternateName": "Snow Plow Sales of Walpole",
-          "description": "Authorized Fisher snow plow and Toro dealer in Walpole, New Hampshire since 1970. Sales, installation, service, repair and genuine parts for Fisher plows and spreaders, plus Toro snow blowers and mowers. Serving New Hampshire and Vermont.",
+          "name": "Snowplow Sales",
+          "legalName": "Snowplow Sales LLC",
+          "alternateName": [
+            "Snow Plow Sales",
+            "Snowplow Sales Inc",
+            "Snowplow Sales of Walpole"
+          ],
+          "description": "Authorized Fisher snow plow, Toro and STIHL dealer in Walpole, New Hampshire since 1970. Sales, installation, service, repair and genuine parts for Fisher plows and spreaders, plus Toro snow blowers and mowers and STIHL chainsaws, trimmers and blowers. Serving New Hampshire and Vermont.",
           "url": "https://www.snowplowsales.com/",
           "telephone": "+1-603-352-6855",
           "email": "sales@snowplowsales.com",
@@ -190,6 +194,16 @@
               "@type": "Brand",
               "name": "Toro",
               "url": "https://www.toro.com/"
+            },
+            {
+              "@type": "Brand",
+              "name": "STIHL",
+              "url": "https://www.stihlusa.com/"
+            },
+            {
+              "@type": "Brand",
+              "name": "Salt Flap",
+              "url": "https://www.saltflap.com/"
             }
           ],
           "sameAs": [
@@ -198,7 +212,7 @@
           ],
           "hasOfferCatalog": {
             "@type": "OfferCatalog",
-            "name": "Snow Plow Sales products and services",
+            "name": "Snowplow Sales products and services",
             "itemListElement": [
               {
                 "@type": "Offer",
@@ -235,6 +249,14 @@
               {
                 "@type": "Offer",
                 "itemOffered": {
+                  "@type": "Product",
+                  "name": "STIHL chainsaws, trimmers, blowers and battery tools",
+                  "url": "https://www.snowplowsales.com/products/stihl"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
                   "@type": "Service",
                   "name": "Snow plow installation",
                   "url": "https://www.snowplowsales.com/services"
@@ -255,7 +277,7 @@
           "@type": "WebSite",
           "@id": "https://www.snowplowsales.com/#website",
           "url": "https://www.snowplowsales.com/",
-          "name": "Snow Plow Sales",
+          "name": "Snowplow Sales",
           "publisher": {
             "@id": "https://www.snowplowsales.com/#business"
           },
@@ -303,11 +325,19 @@
     </script>
 </head>
 <body>
+    <!-- Utility bar -->
+    <div class="utility">
+        <div class="container">
+            <span>538 Main Street, Walpole, NH 03608<span class="dot">|</span><span class="js-hours-mini">Mon&ndash;Fri 8&ndash;5 &bull; Sat 8&ndash;12</span></span>
+            <span>Authorized Fisher &bull; Toro &bull; STIHL Dealer<span class="dot">|</span><a href="tel:+16033526855">603-352-6855</a></span>
+        </div>
+    </div>
+
     <!-- Header -->
-    <header class="header scrolled">
+    <header class="header">
         <nav class="nav" aria-label="Main navigation">
-            <a href="/" class="nav-logo" aria-label="Snow Plow Sales home">
-                <img src="/assets/images/logo.png" alt="Snow Plow Sales" width="963" height="122">
+            <a href="/" class="nav-logo" aria-label="Snowplow Sales home">
+                <img src="/assets/images/logo.png" alt="Snowplow Sales" width="963" height="122">
             </a>
             <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
                 <span></span>
@@ -316,20 +346,23 @@
             </button>
             <div class="nav-links">
                 <a href="/">Home</a>
-                <a href="/#about">About</a>
                 <div class="nav-dropdown">
-                    <a href="/#brands" class="nav-dropdown-toggle">Products</a>
+                    <a href="/products/fisher" class="nav-dropdown-toggle">Brands</a>
                     <div class="nav-dropdown-menu">
                         <a href="/products/fisher">Fisher Plows &amp; Spreaders</a>
                         <a href="/products/fisher-plows">Fisher Snow Plows</a>
                         <a href="/products/fisher-spreaders" aria-current="page">Fisher Spreaders</a>
-                        <a href="/products/accessories">Parts &amp; Accessories</a>
-                        <a href="/products/toro">Toro Equipment</a>
+                        <a href="/products/toro">Toro Snow Blowers &amp; Mowers</a>
+                        <a href="/products/stihl">STIHL Chainsaws &amp; Trimmers</a>
+                        <a href="/products/accessories">Parts, Accessories &amp; Salt Flap</a>
                     </div>
                 </div>
-                <a href="/services">Services</a>
+                <a href="/services">Service</a>
                 <a href="/inventory">Inventory</a>
-                <a href="/contact" class="nav-cta">Contact Us</a>
+                <a href="/#about">About</a>
+                <a href="/contact">Contact</a>
+                <a href="tel:+16033526855" class="nav-phone">603-352-6855</a>
+                <a href="/contact#message-form" class="nav-cta">Get a Quote</a>
             </div>
         </nav>
     </header>
@@ -416,11 +449,11 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-info">
-                    <span class="footer-logo"><img src="/assets/images/logo.png" alt="Snow Plow Sales" width="963" height="122" loading="lazy"></span>
-                    <p>Authorized Fisher &amp; Toro Dealer &bull; Walpole, NH &bull; Since 1970</p>
+                    <span class="footer-logo"><img src="/assets/images/logo.png" alt="Snowplow Sales" width="963" height="122" loading="lazy"></span>
+                    <p>Authorized Fisher, Toro &amp; Stihl Dealer &bull; Walpole, NH &bull; Since 1970</p>
                 </div>
                 <div class="footer-social">
-                    <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" aria-label="Snow Plow Sales on Instagram">
+                    <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" aria-label="Snowplow Sales on Instagram">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24" aria-hidden="true">
                             <rect x="2" y="2" width="20" height="20" rx="5"/>
                             <circle cx="12" cy="12" r="5"/>
@@ -433,7 +466,7 @@
                 <div class="footer-col">
                     <h4>Visit the Shop</h4>
                     <address>
-                        Snow Plow Sales<br>
+                        Snowplow Sales<br>
                         538 Main Street<br>
                         Walpole, NH 03608
                     </address>
@@ -452,6 +485,7 @@
                         <li><a href="/products/fisher-spreaders">Fisher Spreaders</a></li>
                         <li><a href="/products/accessories">Parts &amp; Accessories</a></li>
                         <li><a href="/products/toro">Toro Snow Blowers &amp; Mowers</a></li>
+                        <li><a href="/products/stihl">Stihl Chainsaws &amp; Trimmers</a></li>
                         <li><a href="/inventory">New &amp; Used Inventory</a></li>
                     </ul>
                 </div>
@@ -463,11 +497,12 @@
                         <li><a href="/#faq">FAQ</a></li>
                         <li><a href="/contact">Contact Us</a></li>
                         <li><a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                        <li><a href="https://g.page/r/CV1K-XRTPHYmEBM/review" target="_blank" rel="noopener noreferrer">Review Us on Google</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Snow Plow Sales LLC &bull; Fisher snow plow &amp; Toro dealer serving New Hampshire and Vermont</p>
+                <p>&copy; 2026 Snowplow Sales LLC &bull; Fisher, Toro &amp; Stihl dealer serving New Hampshire and Vermont</p>
                 <a href="/admin" class="footer-admin" rel="nofollow">Admin Login</a>
             </div>
         </div>

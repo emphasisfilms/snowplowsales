@@ -1,4 +1,4 @@
-# Snow Plow Sales — https://www.snowplowsales.com
+# Snowplow Sales — https://www.snowplowsales.com
 User-agent: *
 Allow: /
 Disallow: /admin

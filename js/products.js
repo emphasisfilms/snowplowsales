@@ -14,7 +14,7 @@
 
     container.innerHTML = '<div class="product-grid-loading">Loading products...</div>';
 
-    supabase.from('site_settings').select('value').eq('key', 'products_' + brand).single()
+    supabase.from('site_settings').select('value').eq('key', 'products_' + brand).maybeSingle()
         .then(function (r) {
             if (r.error || !r.data || !r.data.value || !r.data.value.products || r.data.value.products.length === 0) {
                 hideSection();

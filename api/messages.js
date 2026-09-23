@@ -9,7 +9,7 @@
 // Env vars (Vercel project settings):
 //   RESEND_API_KEY     — resend.com API key
 //   NOTIFY_EMAIL_TO    — where owner alerts go
-//   NOTIFY_EMAIL_FROM  — sender, e.g. "Snow Plow Sales <onboarding@resend.dev>"
+//   NOTIFY_EMAIL_FROM  — sender, e.g. "Snowplow Sales <onboarding@resend.dev>"
 
 // Public values — same ones shipped to browsers in js/supabase-config.js.
 var SUPABASE_URL = process.env.SUPABASE_URL || 'https://mmkzpssjmkwrevgfebua.supabase.co';
@@ -45,7 +45,7 @@ async function sendResendEmail(msg) {
     var to = process.env.NOTIFY_EMAIL_TO;
     if (!apiKey || !to) return false;
 
-    var from = process.env.NOTIFY_EMAIL_FROM || 'Snow Plow Sales <onboarding@resend.dev>';
+    var from = process.env.NOTIFY_EMAIL_FROM || 'Snowplow Sales <onboarding@resend.dev>';
 
     var html =
         '<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;">' +

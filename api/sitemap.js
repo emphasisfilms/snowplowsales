@@ -18,6 +18,7 @@ var STATIC_PAGES = [
     ['/products/fisher-spreaders', 'monthly', '0.8'],
     ['/products/accessories', 'monthly', '0.7'],
     ['/products/toro', 'monthly', '0.8'],
+    ['/products/stihl', 'monthly', '0.8'],
     ['/services', 'monthly', '0.8'],
     ['/contact', 'monthly', '0.7']
 ];

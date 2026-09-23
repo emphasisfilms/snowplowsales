@@ -115,7 +115,7 @@
         var list = {
             '@context': 'https://schema.org',
             '@type': 'ItemList',
-            'name': 'Current inventory at Snow Plow Sales',
+            'name': 'Current inventory at Snowplow Sales',
             'numberOfItems': items.length,
             'itemListElement': items.map(function (item, i) {
                 return {

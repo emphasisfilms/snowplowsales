@@ -95,11 +95,14 @@
                 // Don't add Sunday to short format
             }
 
-            // Update hero-phone span (index.html)
+            // Update hero-phone span (legacy) and the utility bar mini hours (every page)
             var heroPhone = document.querySelector('.hero-phone span');
             if (heroPhone && heroText) {
                 heroPhone.textContent = heroText;
             }
+            document.querySelectorAll('.js-hours-mini').forEach(function (el) {
+                if (heroText) el.textContent = heroText;
+            });
 
             // Update footer hours summary (every page)
             document.querySelectorAll('.js-hours-short').forEach(function (el) {
@@ -120,9 +123,11 @@
                 if (barText) contactBarHours.innerHTML = barText.replace(/\n/g, '<br>');
             }
 
-            // Update contact.html hours info-block
+            // Update contact.html hours info-block and the homepage location block
             var contactHours = document.querySelector('.contact-info-card .info-block:last-of-type p');
-            if (contactHours) {
+            var longTargets = Array.prototype.slice.call(document.querySelectorAll('.js-hours-long'));
+            if (contactHours) longTargets.push(contactHours);
+            if (longTargets.length) {
                 var days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                 var dayNames = { monday: 'Monday', tuesday: 'Tuesday', wednesday: 'Wednesday', thursday: 'Thursday', friday: 'Friday', saturday: 'Saturday', sunday: 'Sunday' };
 
@@ -160,7 +165,7 @@
                 }
 
                 if (lines.length > 0) {
-                    contactHours.innerHTML = lines.join('<br>');
+                    longTargets.forEach(function (el) { el.innerHTML = lines.join('<br>'); });
                 }
             }
 
@@ -169,7 +174,7 @@
                 var noteTargets = [
                     document.querySelector('.contact-bar .contact-item:last-child p'),
                     document.querySelector('.contact-info-card .info-block:last-of-type p')
-                ];
+                ].concat(Array.prototype.slice.call(document.querySelectorAll('.js-hours-long')));
                 noteTargets.forEach(function (el) {
                     if (el) {
                         el.innerHTML += '<br><span style="color:#d4a017;font-weight:700;">' + escapeHtml(hours.special_note) + '</span>';
