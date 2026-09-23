@@ -6,9 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (navToggle && navLinks) {
         navToggle.addEventListener('click', function () {
-            navToggle.classList.toggle('active');
+            var open = navToggle.classList.toggle('active');
             navLinks.classList.toggle('active');
             document.body.classList.toggle('menu-open');
+            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
 
         navLinks.querySelectorAll('a').forEach(function (link) {

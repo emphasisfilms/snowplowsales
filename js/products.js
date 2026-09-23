@@ -6,12 +6,18 @@
     var brand = container.getAttribute('data-brand');
     if (!brand) return;
 
+    var section = document.getElementById('product-section');
+    function hideSection() {
+        container.innerHTML = '';
+        if (section) section.style.display = 'none';
+    }
+
     container.innerHTML = '<div class="product-grid-loading">Loading products...</div>';
 
     supabase.from('site_settings').select('value').eq('key', 'products_' + brand).single()
         .then(function (r) {
             if (r.error || !r.data || !r.data.value || !r.data.value.products || r.data.value.products.length === 0) {
-                container.innerHTML = '';
+                hideSection();
                 return;
             }
 
@@ -33,7 +39,7 @@
                 var photoHtml = '';
                 if (product.photo) {
                     var url = getImageUrl(product.photo);
-                    photoHtml = '<img class="product-card-photo" src="' + url + '" alt="' + (product.name || '') + '">';
+                    photoHtml = '<img class="product-card-photo" src="' + url + '" alt="' + (product.name || '') + '" loading="lazy">';
                 }
 
                 var linkHtml = isLink ? '<span class="product-card-link">Learn More &rarr;</span>' : '';
@@ -50,6 +56,6 @@
         })
         .catch(function (err) {
             console.error('Error loading products:', err);
-            container.innerHTML = '';
+            hideSection();
         });
 })();

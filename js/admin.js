@@ -62,6 +62,7 @@
             backBtn.style.display = 'none';
             appTitle.textContent = 'Dashboard';
             loadGear();
+            loadInventoryVisibility();
         } else {
             backBtn.style.display = 'none';
             appTitle.textContent = 'Dashboard';
@@ -665,6 +666,71 @@
                 }
             });
     });
+
+    // ========================================
+    // Public Inventory Page switch
+    // site_settings.inventory_page = { public: bool, message: string }
+    // Missing row = hidden (see getInventoryVisibility in supabase-config.js)
+    // ========================================
+    var invPublicEl = document.getElementById('inventory-public');
+    var invStatusEl = document.getElementById('inventory-public-status');
+    var invMessageEl = document.getElementById('inventory-notice-message');
+    var saveInvNoticeBtn = document.getElementById('save-inventory-notice-btn');
+
+    function renderInventoryStatus(isPublic) {
+        invStatusEl.textContent = isPublic
+            ? 'Live \u2014 visitors can browse active listings on /inventory'
+            : 'Hidden \u2014 visitors see the "call for current inventory" notice';
+        invStatusEl.style.color = isPublic ? '#4caf50' : 'var(--text-light)';
+    }
+
+    function loadInventoryVisibility() {
+        if (!invPublicEl) return;
+        getInventoryVisibility().then(function (vis) {
+            invPublicEl.checked = vis.public;
+            invMessageEl.value = vis.message || '';
+            renderInventoryStatus(vis.public);
+        });
+    }
+
+    function saveInventoryVisibility(done) {
+        var data = {
+            public: invPublicEl.checked,
+            message: invMessageEl.value.trim() || INVENTORY_NOTICE_DEFAULT
+        };
+        return supabase.from('site_settings')
+            .upsert({ key: 'inventory_page', value: data, updated_at: new Date().toISOString() })
+            .then(function (r) {
+                if (r.error) {
+                    showToast('Error saving inventory setting', 'error');
+                    return false;
+                }
+                renderInventoryStatus(data.public);
+                if (done) done();
+                return true;
+            });
+    }
+
+    if (invPublicEl) {
+        invPublicEl.addEventListener('change', function () {
+            var wantPublic = invPublicEl.checked;
+            saveInventoryVisibility(function () {
+                showToast(wantPublic ? 'Inventory page is now LIVE' : 'Inventory page hidden');
+            }).then(function (ok) {
+                if (!ok) invPublicEl.checked = !wantPublic;
+            });
+        });
+
+        saveInvNoticeBtn.addEventListener('click', function () {
+            saveInvNoticeBtn.disabled = true;
+            saveInvNoticeBtn.textContent = 'Saving...';
+            saveInventoryVisibility(function () { showToast('Notice saved!'); })
+                .then(function () {
+                    saveInvNoticeBtn.disabled = false;
+                    saveInvNoticeBtn.textContent = 'Save Notice';
+                });
+        });
+    }
 
     // ========================================
     // Hours Settings

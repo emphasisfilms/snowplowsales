@@ -62,7 +62,7 @@
         }
 
         var card = document.createElement('a');
-        card.href = '/inventory-detail.html?id=' + item.id;
+        card.href = '/inventory/' + item.id;
         card.className = 'inventory-item';
         card.setAttribute('data-type', item.condition);
         card.innerHTML =
@@ -105,6 +105,34 @@
         });
     }
 
+    // SEO: describe the listing grid as a schema.org ItemList so search
+    // engines can associate each detail page with this collection.
+    function injectItemListSchema(items) {
+        if (!items || items.length === 0) return;
+        var existing = document.getElementById('inventory-itemlist-ld');
+        if (existing) existing.remove();
+        var origin = 'https://www.snowplowsales.com';
+        var list = {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            'name': 'Current inventory at Snow Plow Sales',
+            'numberOfItems': items.length,
+            'itemListElement': items.map(function (item, i) {
+                return {
+                    '@type': 'ListItem',
+                    'position': i + 1,
+                    'url': origin + '/inventory/' + item.id,
+                    'name': item.title
+                };
+            })
+        };
+        var script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.id = 'inventory-itemlist-ld';
+        script.textContent = JSON.stringify(list);
+        document.head.appendChild(script);
+    }
+
     // Fetch equipment from Supabase
     function fetchEquipment() {
         showLoading();
@@ -124,6 +152,7 @@
 
                 equipmentData = response.data || [];
                 renderCards();
+                injectItemListSchema(equipmentData);
             })
             .catch(function (err) {
                 console.error('Error fetching equipment:', err);
@@ -151,6 +180,19 @@
         });
     });
 
-    // Initialize
-    fetchEquipment();
+    // Initialize: the page ships in the "coming soon" state. Only reveal the
+    // live grid when the admin switch (site_settings.inventory_page) is on.
+    var noticeEl = document.getElementById('inventory-notice');
+    var liveEl = document.getElementById('inventory-live');
+    var noticeText = document.getElementById('inventory-notice-text');
+
+    getInventoryVisibility().then(function (vis) {
+        if (vis.public) {
+            if (noticeEl) noticeEl.style.display = 'none';
+            if (liveEl) liveEl.hidden = false;
+            fetchEquipment();
+        } else if (noticeText && vis.message) {
+            noticeText.textContent = vis.message;
+        }
+    });
 })();

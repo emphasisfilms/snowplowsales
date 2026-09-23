@@ -151,9 +151,11 @@ CREATE POLICY "Authenticated full access to site settings"
     USING (true)
     WITH CHECK (true);
 
--- Seed: site alert (off by default)
+-- Seed: site alert (off by default), public inventory page (hidden by default;
+-- toggled from the admin Inventory tab, a missing row also means hidden)
 INSERT INTO site_settings (key, value) VALUES
     ('site_alert', '{"active": false, "message": "", "type": "info"}'::jsonb),
+    ('inventory_page', '{"public": false, "message": ""}'::jsonb),
     ('business_hours', '{
         "monday": {"open": "8:00 AM", "close": "5:00 PM", "closed": false},
         "tuesday": {"open": "8:00 AM", "close": "5:00 PM", "closed": false},

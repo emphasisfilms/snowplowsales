@@ -1,0 +1,8 @@
+# Snow Plow Sales — https://www.snowplowsales.com
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /api/
+
+Sitemap: https://www.snowplowsales.com/sitemap.xml

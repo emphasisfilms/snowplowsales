@@ -370,7 +370,7 @@ h3 {
     inset: -12px;
     background:
         linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)),
-        url('../assets/images/hero-snow.jpg') center 35% / cover no-repeat;
+        url('../assets/images/hero-snow.webp') center 35% / cover no-repeat;
     filter: blur(1px);
 }
 
@@ -2193,4 +2193,339 @@ a.inventory-item {
     .admin-table td:nth-child(3) {
         display: none;
     }
+}
+
+/* ========================================
+   SEO pass: hero heading, breadcrumbs, FAQ,
+   footer NAP grid, content helpers
+   ======================================== */
+
+.hero-title {
+    color: #1a1a1a;
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin: 0 auto 10px;
+    max-width: 900px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    margin-bottom: 20px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.breadcrumbs ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    color: var(--color-text-light);
+}
+
+.breadcrumbs li + li::before {
+    content: '/';
+    margin-right: 6px;
+    color: var(--color-border);
+}
+
+.breadcrumbs a {
+    color: var(--color-text-light);
+    transition: color var(--transition);
+}
+
+.breadcrumbs a:hover {
+    color: var(--color-accent);
+}
+
+.breadcrumbs li[aria-current="page"] {
+    color: var(--color-accent);
+}
+
+.breadcrumbs-dark ol {
+    justify-content: flex-start;
+}
+
+/* Inline content links */
+.content-link,
+.page-content p a,
+.about-text p a,
+.faq-answer a,
+.offering-card ul li a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-color: rgba(212, 160, 23, 0.4);
+    text-underline-offset: 3px;
+    transition: color var(--transition), text-decoration-color var(--transition);
+}
+
+.content-link:hover,
+.page-content p a:hover,
+.about-text p a:hover,
+.faq-answer a:hover,
+.offering-card ul li a:hover {
+    color: var(--color-text-bright);
+    text-decoration-color: var(--color-accent);
+}
+
+.service-item h3 a {
+    color: inherit;
+}
+
+.service-item h3 a:hover {
+    color: var(--color-accent);
+}
+
+.about-area {
+    font-size: 0.95rem;
+    color: var(--color-text-light);
+}
+
+.about-area strong {
+    color: var(--color-text);
+}
+
+.content-block {
+    margin-top: 64px;
+    max-width: 800px;
+}
+
+.content-block h2 {
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    margin-bottom: 16px;
+}
+
+.content-block p {
+    color: var(--color-text);
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+.page-content-alt {
+    background-color: var(--color-bg-alt);
+    border-top: 1px solid var(--color-border);
+}
+
+.offering-link {
+    display: block;
+    color: inherit;
+}
+
+.offering-link .panel-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: var(--color-accent);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.detail-location {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+}
+
+.detail-location a {
+    color: var(--color-accent);
+}
+
+.directions-block {
+    margin-top: 48px;
+}
+
+/* FAQ */
+.faq {
+    padding: 100px 0;
+    background-color: var(--color-bg-alt);
+    border-top: 3px solid var(--color-border);
+}
+
+.faq .container {
+    max-width: 900px;
+}
+
+.faq h2 {
+    text-align: center;
+}
+
+.faq .section-subtitle {
+    text-align: center;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.faq-item {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius);
+    transition: border-color var(--transition);
+}
+
+.faq-item[open] {
+    border-color: var(--color-accent);
+}
+
+.faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 20px 56px 20px 24px;
+    position: relative;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary h3 {
+    display: inline;
+    font-size: 1.05rem;
+    text-transform: none;
+    letter-spacing: 0;
+    margin: 0;
+}
+
+.faq-item summary::after {
+    content: '+';
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-accent);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.faq-item[open] summary::after {
+    content: '\2013';
+}
+
+.faq-answer {
+    padding: 0 24px 24px;
+}
+
+.faq-answer p {
+    color: var(--color-text);
+    line-height: 1.7;
+}
+
+/* Footer NAP + links grid */
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-col h4 {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--color-accent);
+    margin-bottom: 12px;
+}
+
+.footer-col address {
+    font-style: normal;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.footer-col p {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.footer-hours {
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+.footer-link,
+.footer-links a {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    transition: color var(--transition);
+}
+
+.footer-link:hover,
+.footer-links a:hover {
+    color: var(--color-accent);
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 6px;
+}
+
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-title {
+        letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Inventory "coming soon" notice (shown while the public inventory is hidden) */
+.inventory-notice {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 32px;
+    text-align: center;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-top: 3px solid var(--color-accent);
+    border-radius: var(--radius);
+}
+
+.inventory-notice h2 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.inventory-notice p {
+    color: var(--color-text);
+    line-height: 1.7;
+    margin: 0 auto 28px;
+    max-width: 560px;
+}
+
+.detail-page .inventory-notice {
+    margin-top: 16px;
 }

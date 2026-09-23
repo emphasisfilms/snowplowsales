@@ -1000,6 +1000,26 @@
         <div id="section-equipment" class="dash-section">
             <!-- List -->
             <div id="list-section">
+                <!-- Public inventory page switch (site_settings.inventory_page) -->
+                <div class="toggle-row" style="align-items:flex-start;">
+                    <div style="padding-right:12px;">
+                        <label style="display:block;font-weight:700;">Public Inventory Page</label>
+                        <span id="inventory-public-status" style="display:block;font-size:0.75rem;color:var(--text-light);margin-top:4px;">Loading&hellip;</span>
+                    </div>
+                    <label class="toggle-switch" style="flex-shrink:0;">
+                        <input type="checkbox" id="inventory-public">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <details id="inventory-notice-editor" style="margin-bottom:16px;">
+                    <summary style="font-size:0.75rem;color:var(--text-light);cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Edit "coming soon" notice</summary>
+                    <div class="field" style="margin-top:12px;">
+                        <label>Notice shown to visitors while inventory is hidden</label>
+                        <textarea id="inventory-notice-message" rows="4"></textarea>
+                    </div>
+                    <button type="button" id="save-inventory-notice-btn" class="btn btn-accent">Save Notice</button>
+                </details>
+
                 <div class="view-tabs">
                     <button class="view-tab active" data-filter="active">Active</button>
                     <button class="view-tab" data-filter="new">New</button>

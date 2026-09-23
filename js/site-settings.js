@@ -54,6 +54,22 @@
         });
 
     // ========================================
+    // Homepage inventory callout
+    // Static markup is the "coming soon / call us" state; upgrade to a live
+    // "View Inventory" link when the public inventory page is switched on.
+    // ========================================
+    var calloutText = document.getElementById('inventory-callout-text');
+    var calloutBtn = document.getElementById('inventory-callout-btn');
+    if (calloutText && calloutBtn && typeof getInventoryVisibility === 'function') {
+        getInventoryVisibility().then(function (vis) {
+            if (!vis.public) return;
+            calloutText.textContent = 'New and used Fisher plows, spreaders, Toro snow blowers, mowers, and more. See what\'s in stock right now.';
+            calloutBtn.textContent = 'View Inventory';
+            calloutBtn.href = '/inventory';
+        });
+    }
+
+    // ========================================
     // Dynamic Business Hours
     // ========================================
     supabase.from('site_settings').select('value').eq('key', 'business_hours').single()
@@ -84,6 +100,15 @@
             if (heroPhone && heroText) {
                 heroPhone.textContent = heroText;
             }
+
+            // Update footer hours summary (every page)
+            document.querySelectorAll('.js-hours-short').forEach(function (el) {
+                var lines = [];
+                if (mfOpen && mfClose) lines.push('Mon\u2013Fri ' + mfOpen + '\u2013' + mfClose);
+                if (satOpen && satClose) lines.push('Sat ' + satOpen + '\u2013' + satClose);
+                if (hours.sunday && hours.sunday.closed) lines.push('Sun Closed');
+                if (lines.length) el.innerHTML = lines.map(escapeHtml).join('<br>');
+            });
 
             // Update contact-bar hours (index.html)
             var contactBarHours = document.querySelector('.contact-bar .contact-item:last-child p');
