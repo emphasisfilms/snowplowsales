@@ -1029,7 +1029,7 @@
                 '<span class="day-label">' + day.charAt(0).toUpperCase() + day.slice(1, 3) + '</span>' +
                 '<input type="text" data-day="' + day + '" data-field="open" placeholder="8:00 AM" value="' + (d.open || '') + '"' + (d.closed ? ' disabled' : '') + '>' +
                 '<input type="text" data-day="' + day + '" data-field="close" placeholder="5:00 PM" value="' + (d.close || '') + '"' + (d.closed ? ' disabled' : '') + '>' +
-                '<label class="closed-check"><input type="checkbox" data-day="' + day + '" data-field="closed"' + (d.closed ? ' checked' : '') + '> Closed</label>';
+                '<label class="closed-check"><input type="checkbox" data-day="' + day + '" data-field="closed"' + (d.closed ? ' checked' : '') + '><span>Closed</span></label>';
             hoursEditorEl.appendChild(row);
         });
 

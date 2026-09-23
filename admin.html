@@ -1005,6 +1005,20 @@
         .dash-note { font-size: 0.85rem; color: var(--text-light); background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius); padding: 12px 14px; }
         .list-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 4px 0 12px; flex-wrap: wrap; }
         .list-toolbar .btn-small { padding: 8px 12px; }
+        /* Store hours editor: compact, readable rows */
+        #hours-editor { max-width: 640px; }
+        .hours-row { grid-template-columns: 64px 150px 150px auto; gap: 12px; padding: 10px 14px; margin-bottom: 8px; border-radius: var(--radius); box-shadow: none; }
+        .hours-row .day-label { font-family: 'Oswald', sans-serif; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
+        .hours-row input[type="text"] { width: 100%; font-size: 15px; padding: 10px 12px; }
+        .hours-row input[type="text"]:disabled { color: #b5b5b0; background: #f4f4f1; }
+        .closed-check { font-size: 0.85rem; color: var(--text); gap: 8px; padding-left: 4px; }
+        .closed-check input[type="checkbox"] { width: 18px; height: 18px; }
+        #hours-note { max-width: 640px; }
+        @media (max-width: 480px) {
+            .hours-row { grid-template-columns: 48px 1fr 1fr auto; gap: 8px; padding: 10px; }
+            .hours-row input[type="text"] { font-size: 13px; padding: 9px 8px; }
+            .closed-check span { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -1371,6 +1385,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/js/supabase-config.js?v=20260923h"></script>
     <script src="/js/brand-photos.js?v=20260923h"></script>
-    <script src="/js/admin.js?v=20260923h"></script>
+    <script src="/js/admin.js?v=20260923i"></script>
 </body>
 </html>
