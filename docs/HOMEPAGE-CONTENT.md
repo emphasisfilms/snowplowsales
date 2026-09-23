@@ -66,7 +66,7 @@ All three are admin-managed.
 | Slot | Status | Notes |
 |---|---|---|
 | Handle link | ✅ | @snowplowsalesllc |
-| 4 photos | 🟡 | Defaults are lot/brand photos. Upload 4 recent posts in Admin → Homepage → Instagram whenever you like. |
+| 8 photos | 🟡 | One row: 8 on wide screens, 6 / 4 / 3 as the browser narrows (never a second row). Defaults are lot and brand photos; upload recent posts in Admin → Homepage → Instagram. |
 
 ## Customer reviews (3)
 | Slot | Status | Notes |

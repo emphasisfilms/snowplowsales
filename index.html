@@ -34,7 +34,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/assets/images/icon.png">
     <link rel="apple-touch-icon" href="/assets/images/icon.png">
-    <link rel="stylesheet" href="/css/style.css?v=20260923c">
+    <link rel="stylesheet" href="/css/style.css?v=20260923e">
 
     <script type="application/ld+json">
     {
@@ -627,21 +627,27 @@
 
     <!-- Video + Instagram (admin-managed) -->
     <section class="section section--alt" id="media">
-        <div class="container media-grid">
-            <div data-h-show="video.url">
+        <div class="container media-stack">
+            <div class="media-video" data-h-show="video.url">
                 <p class="eyebrow eyebrow--accent">See it in action</p>
                 <h2>From the Shop Floor</h2>
                 <div class="video" data-h-video></div>
             </div>
             <div>
-                <p class="eyebrow eyebrow--accent">Instagram</p>
-                <h2 style="margin-bottom:6px"><a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" data-h-href="instagram.url">@snowplowsalesllc</a></h2>
-                <p style="color:var(--grey)">Latest from the lot, straight from Instagram.</p>
+                <div class="ig-head">
+                    <p class="eyebrow eyebrow--accent">Instagram</p>
+                    <h2><a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" data-h-href="instagram.url">@snowplowsalesllc</a></h2>
+                    <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn--sm" data-h-href="instagram.url">Follow Us</a>
+                </div>
                 <div class="ig-grid">
-                    <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.0" data-h-href="instagram.url" style="background-image:url('/assets/images/fly.webp')"></a>
-                    <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.1" data-h-href="instagram.url" style="background-image:url('/assets/images/fisher-lineup.webp')"></a>
-                    <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.2" data-h-href="instagram.url" style="background-image:url('/assets/images/brands/stihl/hero-backpack-blower.webp')"></a>
-                    <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.3" data-h-href="instagram.url" style="background-image:url('/assets/images/brands/saltflap/salt-flap-xl.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.0" data-h-href="instagram.url" style="background-image:url('/assets/images/fly.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.1" data-h-href="instagram.url" style="background-image:url('/assets/images/fisher-lineup.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.2" data-h-href="instagram.url" style="background-image:url('/assets/images/stihl-storefront.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.3" data-h-href="instagram.url" style="background-image:url('/assets/images/brands/saltflap/salt-flap-xl.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.4" data-h-href="instagram.url" style="background-image:url('/assets/images/brands/toro/billboard-snow.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.5" data-h-href="instagram.url" style="background-image:url('/assets/images/brands/saltflap/flap-tarp.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.6" data-h-href="instagram.url" style="background-image:url('/assets/images/brands/toro/billboard-zero-turn.webp')"></a>
+                <a href="https://www.instagram.com/snowplowsalesllc/" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Snowplow Sales on Instagram" data-h-img="instagram.photos.7" data-h-href="instagram.url" style="background-image:url('/assets/images/brands/saltflap/ford-installed.webp')"></a>
                 </div>
             </div>
         </div>
@@ -840,9 +846,9 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    <script src="/js/supabase-config.js?v=20260923c" defer></script>
-    <script src="/js/main.js?v=20260923c" defer></script>
-    <script src="/js/home.js?v=20260923c" defer></script>
-    <script src="/js/site-settings.js?v=20260923c" defer></script>
+    <script src="/js/supabase-config.js?v=20260923e" defer></script>
+    <script src="/js/main.js?v=20260923e" defer></script>
+    <script src="/js/home.js?v=20260923e" defer></script>
+    <script src="/js/site-settings.js?v=20260923e" defer></script>
 </body>
 </html>

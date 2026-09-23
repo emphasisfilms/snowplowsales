@@ -782,7 +782,11 @@
             { key: 'instagram.photos.0', label: 'Photo 1', type: 'image' },
             { key: 'instagram.photos.1', label: 'Photo 2', type: 'image' },
             { key: 'instagram.photos.2', label: 'Photo 3', type: 'image' },
-            { key: 'instagram.photos.3', label: 'Photo 4', type: 'image' }
+            { key: 'instagram.photos.3', label: 'Photo 4 (last one shown on phones)', type: 'image' },
+            { key: 'instagram.photos.4', label: 'Photo 5', type: 'image' },
+            { key: 'instagram.photos.5', label: 'Photo 6', type: 'image' },
+            { key: 'instagram.photos.6', label: 'Photo 7 (wide screens only)', type: 'image' },
+            { key: 'instagram.photos.7', label: 'Photo 8 (wide screens only)', type: 'image' }
         ]}
     ];
 
