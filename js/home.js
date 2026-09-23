@@ -48,11 +48,13 @@
             if (!v) return;
             if (el.tagName === 'IMG') el.src = v; else el.style.backgroundImage = 'url("' + v + '")';
         });
+        // Gated elements start hidden (CSS) and are revealed only when their
+        // setting is on, so nothing flashes before the settings load.
         var demo = /(^|[?&])demo(=|&|$)/.test(window.location.search);
         document.querySelectorAll('[data-h-show]').forEach(function (el) {
-            if (demo && el.hasAttribute('data-demo-keep')) return;
             var v = get(data, el.getAttribute('data-h-show'));
-            if (v === undefined || v === false || v === '' || v === null) el.style.display = 'none';
+            var on = !(v === undefined || v === false || v === '' || v === null);
+            if (on || (demo && el.hasAttribute('data-demo-keep'))) el.classList.add('h-visible');
         });
 
         // Video: swap the poster/play placeholder for a real embed when a URL is set
