@@ -7,10 +7,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Admin | Snowplow Sales</title>
-    <link rel="icon" type="image/png" href="assets/images/icon.png">
+    <link rel="icon" type="image/png" href="/assets/images/icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #141414;
@@ -938,6 +938,73 @@
                 padding: 8px;
             }
         }
+
+        /* ================= Light theme (matches the public site) ================= */
+        :root {
+            --bg: #f4f4f1; --bg-card: #ffffff; --bg-input: #ffffff; --border: #e2e2df;
+            --text: #3a3a3a; --text-bright: #111111; --text-light: #6b6b6b;
+            --accent: #f2b705; --accent-dark: #d9a204; --green: #2a7d2e; --red: #c62828; --radius: 6px;
+        }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+        h1, h2, h3, .section-title, .dash-nav-btn, .view-tab, .product-brand-tab, .type-opt, .btn, .btn-small, .stat-val, .day-label, .login-screen h1 {
+            font-family: 'Oswald', 'Arial Narrow', sans-serif; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .login-screen { background: var(--bg); }
+        .login-screen h1 { color: var(--text-bright); }
+        .login-box input { background: #fff; border: 1px solid #cfcfca; color: var(--text-bright); }
+        .app-header { background: #ffffff; border-bottom: 1px solid var(--border); box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .app-header h1 { color: var(--text-bright); }
+        .btn-small { background: #fff; border: 1px solid var(--border); color: var(--text); }
+        .btn-small:hover { border-color: var(--text-bright); color: var(--text-bright); }
+        .dash-nav { background: #ffffff; border-bottom: 1px solid var(--border); padding: 10px 16px; gap: 6px; }
+        .dash-nav-btn { border: 1px solid var(--border); color: var(--text-light); background: #fff; font-weight: 600; font-size: 0.8rem; }
+        .dash-nav-btn.active { background: var(--text-bright); color: #fff; border-color: var(--text-bright); }
+        .btn-accent { background: var(--accent); color: var(--text-bright); font-weight: 600; }
+        .btn-accent:hover { background: var(--accent-dark); }
+        .btn-danger { background: #fff; color: var(--red); border: 1px solid var(--red); }
+        .stat-card, .toggle-row, .home-group, .gear-card, .alert-preview, .hours-row { background: #fff; border: 1px solid var(--border); box-shadow: 0 6px 20px rgba(0,0,0,.05); }
+        .stat-val { color: var(--text-bright); }
+        .stat-label { color: var(--text-light); }
+        .section-title { color: var(--text-bright); font-size: 1.1rem; letter-spacing: 1.5px; }
+        .field label, .home-group h3 { color: var(--text-light); }
+        .field input, .field textarea, .field select, .hours-row input { background: #fff; border: 1px solid #cfcfca; color: var(--text-bright); }
+        .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent-dark); box-shadow: 0 0 0 3px rgba(242,183,5,.25); outline: none; }
+        .field select { width: 100%; padding: 12px; border-radius: var(--radius); font-family: inherit; font-size: 0.95rem; }
+        .gear-card { cursor: pointer; }
+        .gear-card:hover { border-color: var(--accent-dark); }
+        .gear-card-thumb { background: #f4f4f1; color: var(--text-light); }
+        .gear-card-thumb img { object-fit: contain; background: #fff; }
+        .gear-card-info h4 { color: var(--text-bright); }
+        .view-tab, .product-brand-tab { background: #fff; border: 1px solid var(--border); color: var(--text-light); }
+        .view-tab.active, .product-brand-tab.active { background: var(--text-bright); color: #fff; border-color: var(--text-bright); }
+        .type-opt { background: #fff; border: 1px solid var(--border); color: var(--text-light); }
+        .type-opt.active { background: var(--text-bright); color: #fff; border-color: var(--text-bright); }
+        .list-empty { color: var(--text-light); background: #fff; border: 1px dashed var(--border); border-radius: var(--radius); }
+        .toast { background: var(--text-bright); color: #fff; }
+        .toast.error { background: var(--red); }
+        .photo-thumb, .add-photo-btn { background: #fff; border: 1px dashed #cfcfca; color: var(--text-light); }
+        .home-img img { background: #f4f4f1; border: 1px solid var(--border); }
+        .toggle-slider { background: #cfcfca; }
+        .toggle-switch input:checked + .toggle-slider { background: var(--green); }
+        .loading-anim { border-color: var(--border); border-top-color: var(--accent-dark); }
+        .dash-section { max-width: 1100px; margin: 0 auto; padding: 24px 20px 120px; }
+
+        /* Dashboard */
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 24px; }
+        .status-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: 0 6px 20px rgba(0,0,0,.05); display: flex; flex-direction: column; gap: 8px; }
+        .status-card .label { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.72rem; color: var(--text-light); }
+        .status-card .value { font-family: 'Oswald', sans-serif; font-size: 1.6rem; color: var(--text-bright); line-height: 1.1; }
+        .status-card .value.on { color: var(--green); }
+        .status-card .value.off { color: var(--text-light); }
+        .status-card .sub { font-size: 0.78rem; color: var(--text-light); }
+        .status-card .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .status-card .link { font-size: 0.78rem; color: var(--accent-dark); font-weight: 600; cursor: pointer; }
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 24px; }
+        .quick-actions button, .quick-actions a { display: block; text-align: center; padding: 14px 10px; background: var(--text-bright); color: #fff; border: 0; border-radius: var(--radius); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem; cursor: pointer; border-bottom: 4px solid var(--accent); text-decoration: none; }
+        .quick-actions button:hover, .quick-actions a:hover { background: #2a2a2a; }
+        .dash-note { font-size: 0.85rem; color: var(--text-light); background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius); padding: 12px 14px; }
+        .list-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 4px 0 12px; flex-wrap: wrap; }
+        .list-toolbar .btn-small { padding: 8px 12px; }
     </style>
 </head>
 <body>
@@ -970,7 +1037,6 @@
             <button class="dash-nav-btn active" data-section="dashboard">Dashboard</button>
             <button class="dash-nav-btn" data-section="products">Products</button>
             <button class="dash-nav-btn" data-section="equipment">Inventory</button>
-            <button class="dash-nav-btn" data-section="messages">Messages</button>
             <button class="dash-nav-btn" data-section="alert">Alert Banner</button>
             <button class="dash-nav-btn" data-section="hours">Store Hours</button>
             <button class="dash-nav-btn" data-section="home">Homepage</button>
@@ -980,29 +1046,50 @@
 
         <!-- Dashboard Section -->
         <div id="section-dashboard" class="dash-section active">
-            <h2 class="section-title">Quick Stats</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-val" id="stat-active">--</div>
-                    <div class="stat-label">Active Listings</div>
+            <h2 class="section-title">Site Status</h2>
+            <div class="dash-grid">
+                <div class="status-card">
+                    <div class="row">
+                        <span class="label">Public inventory page</span>
+                        <label class="toggle-switch"><input type="checkbox" id="dash-inventory-toggle"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="value off" id="dash-inventory-status">&hellip;</div>
+                    <div class="sub">Off = visitors see the "call for inventory" notice.</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-val" id="stat-new">--</div>
-                    <div class="stat-label">New</div>
+                <div class="status-card">
+                    <span class="label">Alert banner</span>
+                    <div class="value off" id="dash-alert-status">&hellip;</div>
+                    <span class="link" data-goto="alert">Edit banner &rarr;</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-val" id="stat-used">--</div>
-                    <div class="stat-label">Used</div>
+                <div class="status-card">
+                    <span class="label">Homepage promotion</span>
+                    <div class="value off" id="dash-promo-status">&hellip;</div>
+                    <span class="link" data-goto="home">Edit homepage &rarr;</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-val" id="stat-messages">--</div>
-                    <div class="stat-label">Messages</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-val" id="stat-unread">--</div>
-                    <div class="stat-label">Unread</div>
+                <div class="status-card">
+                    <span class="label">Store hours today</span>
+                    <div class="value" id="dash-hours-today">&hellip;</div>
+                    <span class="link" data-goto="hours">Edit hours &rarr;</span>
                 </div>
             </div>
+
+            <h2 class="section-title">Listings</h2>
+            <div class="dash-grid">
+                <div class="status-card"><span class="label">Active inventory listings</span><div class="value" id="stat-active">--</div><div class="sub"><span id="stat-new">--</span> new &bull; <span id="stat-used">--</span> used &bull; <span id="stat-draft">--</span> drafts</div></div>
+                <div class="status-card"><span class="label">Fisher products</span><div class="value" id="stat-fisher">--</div><div class="sub" id="stat-fisher-photos"></div></div>
+                <div class="status-card"><span class="label">Toro products</span><div class="value" id="stat-toro">--</div><div class="sub" id="stat-toro-photos"></div></div>
+                <div class="status-card"><span class="label">STIHL products</span><div class="value" id="stat-stihl">--</div><div class="sub" id="stat-stihl-photos"></div></div>
+            </div>
+
+            <h2 class="section-title">Quick Actions</h2>
+            <div class="quick-actions">
+                <button type="button" data-goto="equipment" data-new="1">+ Add Equipment</button>
+                <button type="button" data-goto="products">Edit Products</button>
+                <button type="button" data-goto="home">Edit Homepage</button>
+                <button type="button" data-goto="alert">Alert Banner</button>
+                <a href="/" target="_blank" rel="noopener">View Website &rarr;</a>
+            </div>
+            <div class="dash-note">Contact-form messages are emailed to levi@snowplowsales.com automatically. Older messages are still saved in the database if you ever need them.</div>
         </div>
 
         <!-- Equipment Section -->
@@ -1150,12 +1237,6 @@
             </div>
         </div>
 
-        <!-- Messages Section -->
-        <div id="section-messages" class="dash-section">
-            <h2 class="section-title">Contact Form Inbox</h2>
-            <div id="messages-list"></div>
-        </div>
-
         <!-- Alert Section -->
         <div id="section-alert" class="dash-section">
             <h2 class="section-title">Site Alert Banner</h2>
@@ -1216,7 +1297,7 @@
         <!-- Products Section -->
         <div id="section-products" class="dash-section">
             <h2 class="section-title">Product Listings</h2>
-            <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:16px;">Manage the products shown on your Fisher, Toro and Stihl pages. Add photos and links for each product.</p>
+            <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:16px;">These are the "Featured Products" grids on the Fisher, Toro and STIHL pages. Pick a photo from the manufacturer library or upload your own; "Auto-fill" matches photos to product names for you.</p>
 
             <!-- Brand Tabs -->
             <div id="product-list-view">
@@ -1224,6 +1305,10 @@
                     <button class="product-brand-tab active" data-brand="fisher">Fisher</button>
                     <button class="product-brand-tab" data-brand="toro">Toro</button>
                     <button class="product-brand-tab" data-brand="stihl">Stihl</button>
+                </div>
+                <div class="list-toolbar">
+                    <span style="font-size:0.8rem;color:var(--text-light);" id="product-count"></span>
+                    <button type="button" id="autofill-photos-btn" class="btn-small">Auto-fill missing photos</button>
                 </div>
                 <div id="product-list" class="list-view"></div>
                 <div class="submit-area">
@@ -1238,7 +1323,7 @@
 
                     <div class="field">
                         <label>Product Name</label>
-                        <input type="text" id="p-name" placeholder="e.g. Homesteader" required>
+                        <input type="text" id="p-name" placeholder="e.g. HS or XV2" required>
                     </div>
 
                     <div class="field">
@@ -1251,8 +1336,13 @@
                         <input type="url" id="p-url" placeholder="https://www.fisherplows.com/products/...">
                     </div>
 
+                    <div class="field">
+                        <label>Photo from the manufacturer library</label>
+                        <select id="p-library"><option value="">Choose a photo&hellip;</option></select>
+                    </div>
+
                     <div class="photos-section">
-                        <h3>Product Photo</h3>
+                        <h3>Or upload your own photo</h3>
                         <div id="product-photo-grid" class="photo-grid" style="grid-template-columns: repeat(2, 1fr);">
                             <button type="button" id="product-photo-btn" class="add-photo-btn">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1279,7 +1369,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/admin.js"></script>
+    <script src="/js/supabase-config.js?v=20260923h"></script>
+    <script src="/js/brand-photos.js?v=20260923h"></script>
+    <script src="/js/admin.js?v=20260923h"></script>
 </body>
 </html>

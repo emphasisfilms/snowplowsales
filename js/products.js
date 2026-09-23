@@ -38,7 +38,7 @@
 
                 var photoHtml = '';
                 if (product.photo) {
-                    var url = getImageUrl(product.photo);
+                    var url = (typeof resolvePhotoUrl === 'function') ? resolvePhotoUrl(product.photo) : getImageUrl(product.photo);
                     photoHtml = '<img class="product-card-photo" src="' + url + '" alt="' + (product.name || '') + '" loading="lazy">';
                 }
 

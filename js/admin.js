@@ -151,30 +151,84 @@
     // Dashboard Stats
     // ========================================
     function loadStats() {
-        // Equipment stats
+        // Inventory listings
         supabase.from('equipment').select('id, status, condition').then(function (r) {
             var items = r.data || [];
             var active = items.filter(function (i) { return i.status === 'active'; });
-            var newItems = active.filter(function (i) { return i.condition === 'new'; });
-            var usedItems = active.filter(function (i) { return i.condition === 'used'; });
-
-            document.getElementById('stat-active').textContent = active.length;
-            document.getElementById('stat-new').textContent = newItems.length;
-            document.getElementById('stat-used').textContent = usedItems.length;
+            setText('stat-active', active.length);
+            setText('stat-new', active.filter(function (i) { return i.condition === 'new'; }).length);
+            setText('stat-used', active.filter(function (i) { return i.condition === 'used'; }).length);
+            setText('stat-draft', items.filter(function (i) { return i.status === 'draft'; }).length);
         });
 
-        // Messages stats
-        supabase.from('messages').select('id, is_read').then(function (r) {
-            var msgs = r.data || [];
-            var unread = msgs.filter(function (m) { return !m.is_read; });
-            document.getElementById('stat-messages').textContent = msgs.length;
-            document.getElementById('stat-unread').textContent = unread.length;
-            updateUnreadBadge(unread.length);
+        // Products per brand (+ how many still lack a photo)
+        supabase.from('site_settings').select('key, value').in('key', ['products_fisher', 'products_toro', 'products_stihl', 'inventory_page', 'site_alert', 'home_content', 'business_hours'])
+            .then(function (r) {
+                var rows = {};
+                (r.data || []).forEach(function (row) { rows[row.key] = row.value || {}; });
+                ['fisher', 'toro', 'stihl'].forEach(function (b) {
+                    var list = (rows['products_' + b] && rows['products_' + b].products) || [];
+                    var missing = list.filter(function (p) { return !p.photo; }).length;
+                    setText('stat-' + b, list.length);
+                    setText('stat-' + b + '-photos', list.length ? (missing ? missing + ' without a photo' : 'all have photos') : 'none yet');
+                });
+
+                var inv = rows.inventory_page || {};
+                var invOn = inv.public === true;
+                var dashToggle = document.getElementById('dash-inventory-toggle');
+                if (dashToggle) dashToggle.checked = invOn;
+                setStatus('dash-inventory-status', invOn ? 'Live' : 'Hidden', invOn);
+
+                var alert = rows.site_alert || {};
+                var alertOn = !!(alert.active && alert.message);
+                setStatus('dash-alert-status', alertOn ? 'On: ' + String(alert.message).slice(0, 40) : 'Off', alertOn);
+
+                var home = rows.home_content || {};
+                var promoOn = !!(home.promo && home.promo.active);
+                setStatus('dash-promo-status', promoOn ? 'Showing' : 'Off', promoOn);
+
+                var hours = rows.business_hours || {};
+                var dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                var today = hours[dayNames[new Date().getDay()]];
+                setText('dash-hours-today', !today ? '--' : (today.closed ? 'Closed' : (today.open + ' \u2013 ' + today.close)));
+            });
+    }
+
+    function setText(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
+    function setStatus(id, text, on) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'value ' + (on ? 'on' : 'off');
+    }
+
+    // Dashboard shortcuts
+    document.querySelectorAll('[data-goto]').forEach(function (el) {
+        el.addEventListener('click', function () {
+            var target = el.getAttribute('data-goto');
+            navigateTo(target);
+            if (el.getAttribute('data-new') && typeof newGearBtn !== 'undefined' && newGearBtn) newGearBtn.click();
+        });
+    });
+    var dashInvToggle = document.getElementById('dash-inventory-toggle');
+    if (dashInvToggle) {
+        dashInvToggle.addEventListener('change', function () {
+            var want = dashInvToggle.checked;
+            var invEl = document.getElementById('inventory-public');
+            if (invEl) invEl.checked = want;
+            supabase.from('site_settings')
+                .upsert({ key: 'inventory_page', value: { public: want, message: (document.getElementById('inventory-notice-message') && document.getElementById('inventory-notice-message').value.trim()) || ((typeof INVENTORY_NOTICE_DEFAULT !== 'undefined') ? INVENTORY_NOTICE_DEFAULT : '') }, updated_at: new Date().toISOString() })
+                .then(function (r) {
+                    if (r.error) { showToast('Error saving', 'error'); dashInvToggle.checked = !want; return; }
+                    setStatus('dash-inventory-status', want ? 'Live' : 'Hidden', want);
+                    showToast(want ? 'Inventory page is now LIVE' : 'Inventory page hidden');
+                });
         });
     }
 
     function updateUnreadBadge(count) {
         var msgBtn = document.querySelector('.dash-nav-btn[data-section="messages"]');
+        if (!msgBtn) return;
         var badge = msgBtn.querySelector('.badge');
         if (count > 0) {
             if (!badge) {
@@ -1177,9 +1231,52 @@
             document.querySelectorAll('.product-brand-tab').forEach(function (t) { t.classList.remove('active'); });
             this.classList.add('active');
             currentBrand = this.getAttribute('data-brand');
+            fillLibrarySelect(currentBrand);
             loadProducts();
         });
     });
+
+    var libraryEl = document.getElementById('p-library');
+    function fillLibrarySelect(brand) {
+        if (!libraryEl) return;
+        var list = (window.BRAND_PHOTOS && window.BRAND_PHOTOS[brand]) || [];
+        libraryEl.innerHTML = '<option value="">Choose a photo\u2026</option>' +
+            list.map(function (e) { return '<option value="' + e.path + '">' + escapeHtml(e.name) + '</option>'; }).join('');
+    }
+    if (libraryEl) {
+        libraryEl.addEventListener('change', function () {
+            pendingProductPhoto = null;
+            existingProductPhoto = libraryEl.value || null;
+            renderProductPhoto();
+        });
+    }
+
+    fillLibrarySelect(currentBrand);
+
+    var autofillBtn = document.getElementById('autofill-photos-btn');
+    if (autofillBtn) {
+        autofillBtn.addEventListener('click', function () {
+            if (!currentProducts.length) { showToast('No products to fill', 'error'); return; }
+            var changed = 0;
+            var updated = currentProducts.map(function (p) {
+                if (p.photo) return p;
+                var m = window.matchBrandPhoto ? window.matchBrandPhoto(currentBrand, p.name) : null;
+                if (!m) return p;
+                changed++;
+                return Object.assign({}, p, { photo: m.path });
+            });
+            if (!changed) { showToast('No matches found for the products missing photos', 'error'); return; }
+            autofillBtn.disabled = true;
+            supabase.from('site_settings')
+                .upsert({ key: 'products_' + currentBrand, value: { products: updated }, updated_at: new Date().toISOString() })
+                .then(function (r) {
+                    autofillBtn.disabled = false;
+                    if (r.error) { showToast('Error saving: ' + r.error.message, 'error'); return; }
+                    showToast('Added photos to ' + changed + ' product' + (changed === 1 ? '' : 's'));
+                    loadProducts();
+                });
+        });
+    }
 
     function showProductList() {
         productListView.style.display = 'block';
@@ -1191,6 +1288,7 @@
     }
 
     function showProductForm() {
+        fillLibrarySelect(currentBrand);
         productListView.style.display = 'none';
         productFormView.style.display = 'block';
         backBtn.style.display = 'inline-block';
@@ -1216,13 +1314,18 @@
                 }
 
                 productList.innerHTML = '';
+                var countEl = document.getElementById('product-count');
+                if (countEl) {
+                    var missing = currentProducts.filter(function (p) { return !p.photo; }).length;
+                    countEl.textContent = currentProducts.length + ' products' + (missing ? ', ' + missing + ' without a photo' : ', all with photos');
+                }
                 currentProducts.forEach(function (product, index) {
                     var card = document.createElement('div');
                     card.className = 'gear-card';
 
                     var thumbHtml = '<div class="gear-card-thumb">No Photo</div>';
                     if (product.photo) {
-                        var url = getImageUrl(product.photo);
+                        var url = resolvePhotoUrl(product.photo);
                         thumbHtml = '<div class="gear-card-thumb"><img src="' + url + '" alt=""></div>';
                     }
 
@@ -1250,6 +1353,7 @@
         document.getElementById('product-idx').value = '';
         pendingProductPhoto = null;
         existingProductPhoto = null;
+        if (libraryEl) libraryEl.value = '';
         renderProductPhoto();
     }
 
@@ -1270,6 +1374,7 @@
         if (product.photo) {
             existingProductPhoto = product.photo;
         }
+        if (libraryEl) libraryEl.value = (product.photo && product.photo.charAt(0) === '/') ? product.photo : '';
         renderProductPhoto();
     }
 
@@ -1302,7 +1407,7 @@
         if (existingProductPhoto) {
             var div = document.createElement('div');
             div.className = 'photo-thumb';
-            var url = getImageUrl(existingProductPhoto);
+            var url = resolvePhotoUrl(existingProductPhoto);
             div.innerHTML = '<img src="' + url + '" alt="">' +
                 '<button type="button" class="photo-remove">&times;</button>';
             productPhotoGrid.insertBefore(div, productPhotoBtn);
@@ -1311,6 +1416,7 @@
             div.querySelector('.photo-remove').addEventListener('click', function (e) {
                 e.stopPropagation();
                 existingProductPhoto = null;
+                if (libraryEl) libraryEl.value = '';
                 renderProductPhoto();
             });
         } else if (pendingProductPhoto) {
@@ -1388,7 +1494,7 @@
             }
 
             // Delete old photo if it was replaced
-            if (oldPhoto && photoChanged && pendingProductPhoto) {
+            if (oldPhoto && oldPhoto.charAt(0) !== '/' && photoChanged && pendingProductPhoto) {
                 supabase.storage.from('equipment-photos').remove([oldPhoto]);
             }
 
