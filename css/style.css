@@ -329,9 +329,10 @@ h4 { font-size: 0.95rem; letter-spacing: 2px; }
 .welcome-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
 .welcome-photo { position: relative; }
 .welcome-photo img { border-radius: var(--radius); box-shadow: var(--shadow-lg); }
-.since { position: absolute; left: -18px; bottom: 28px; background: var(--accent); color: var(--ink); padding: 18px 22px; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center; font-family: var(--font-head); text-transform: uppercase; }
-.since strong { display: block; font-size: 2.6rem; line-height: 1; }
-.since span { font-size: .8rem; letter-spacing: 2px; }
+.since { position: absolute; left: -18px; bottom: 28px; background: var(--accent); color: var(--ink); padding: 16px 22px 14px; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center; font-family: var(--font-head); text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.since span { font-size: .85rem; letter-spacing: 2px; font-weight: 600; line-height: 1.2; }
+.since .since-mid { font-size: .7rem; letter-spacing: 3px; font-weight: 500; opacity: .85; }
+.since strong { display: block; font-size: 2.6rem; line-height: 1; margin-top: 2px; }
 .welcome h2 { margin-bottom: 18px; }
 .welcome h2 em { font-style: normal; color: var(--accent-dark); }
 .welcome p { color: var(--ink-soft); font-size: 1.05rem; margin-bottom: 20px; }
