@@ -640,7 +640,13 @@
         .home-group .field:last-child { margin-bottom: 0; }
         .home-img { display: flex; align-items: center; gap: 12px; }
         .home-img img { width: 96px; height: 64px; object-fit: cover; border-radius: var(--radius); background: #111; border: 1px solid var(--border); }
-        .home-img .btn { padding: 8px 12px; font-size: 0.75rem; }
+        .home-img { align-items: center; }
+        .home-img img { width: 120px; height: 80px; flex: 0 0 120px; }
+        .home-img-meta { display: flex; flex-direction: column; gap: 8px; }
+        .home-img-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .home-img .btn { width: auto; padding: 9px 14px; font-size: 0.72rem; letter-spacing: 1px; border-radius: var(--radius); }
+        .home-img .btn-outline { background: #fff; color: var(--text); border: 1px solid #cfcfca; }
+        .home-img .btn-outline:hover { border-color: var(--text-bright); color: var(--text-bright); }
         .home-img small { color: var(--text-light); font-size: 0.7rem; }
         .home-check { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
         .toggle-row {
@@ -1308,6 +1314,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/js/supabase-config.js?v=20260923h"></script>
     <script src="/js/home-defaults.js?v=20260923k"></script>
-    <script src="/js/admin.js?v=20260923k"></script>
+    <script src="/js/admin.js?v=20260923l"></script>
 </body>
 </html>

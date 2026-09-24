@@ -899,9 +899,9 @@
                     wrap.innerHTML = '<label>' + f.label + '</label>' +
                         '<div class="home-img">' +
                             '<img src="' + (url || '') + '" alt="" data-preview="' + f.key + '"' + (url ? '' : ' style="opacity:.25"') + '>' +
-                            '<div><button type="button" class="btn btn-accent" data-pick="' + f.key + '">Choose photo</button>' +
-                            '<button type="button" class="btn" data-clear="' + f.key + '" style="margin-left:6px;">Use default</button>' +
-                            '<br><small data-name="' + f.key + '">' + (val ? (usingDefault ? 'Built-in default: ' : 'Your upload: ') + val.split('/').pop() : 'No photo') + '</small></div>' +
+                            '<div class="home-img-meta"><div class="home-img-actions"><button type="button" class="btn btn-accent" data-pick="' + f.key + '">Choose photo</button>' +
+                            '<button type="button" class="btn btn-outline" data-clear="' + f.key + '">Use default</button></div>' +
+                            '<small data-name="' + f.key + '">' + (val ? (usingDefault ? 'Built-in default: ' : 'Your upload: ') + val.split('/').pop() : 'No photo') + '</small></div>' +
                             '<input type="file" accept="image/*" data-file="' + f.key + '" style="display:none;">' +
                         '</div>';
                 } else {
