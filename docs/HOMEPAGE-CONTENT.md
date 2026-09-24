@@ -26,7 +26,7 @@ Legend: ✅ real content in place · 🟡 real but should be reviewed/replaced �
 ## Browse-by-category tiles
 | Tile | Status | Photo |
 |---|---|---|
-| Snow Plows | ✅ | Fisher XV2 studio shot (fisherplows.com) |
+| Snowplows | ✅ | Fisher XV2 studio shot (fisherplows.com) |
 | Spreaders | ✅ | Fisher Poly-Caster (fisherplows.com) |
 | Snow Blowers | ✅ | Toro Power Max (toro.com) |
 | Mowers | ✅ | Toro TimeCutter (toro.com) |

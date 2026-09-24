@@ -8,7 +8,7 @@ window.HOME_DEFAULTS = {
     "promo_active": false,
     "eyebrow": "Fisher • Toro • STIHL • Walpole, NH",
     "headline": "New England's <em>Fisher Plow</em> Headquarters",
-    "sub": "Fisher snow plows, Toro and STIHL equipment with sales, installation, service and genuine parts under one roof in Walpole, NH. Family owned since 1970.",
+    "sub": "Fisher snowplows, Toro and STIHL equipment with sales, installation, service and genuine parts under one roof in Walpole, NH. Family owned since 1970.",
     "btn1_label": "Shop Fisher Plows",
     "btn1_url": "/products/fisher",
     "btn2_label": "Book an Installation",
