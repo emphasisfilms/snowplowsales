@@ -87,6 +87,52 @@
 
         .login-box input::placeholder { color: var(--text-light); }
 
+        .login-link {
+            display: block;
+            margin: 12px auto 0;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-family: inherit;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .login-link:hover { color: var(--text-bright); }
+        .login-help {
+            color: var(--text-light);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .login-note {
+            background: rgba(76, 175, 80, 0.12);
+            border: 1px solid rgba(76, 175, 80, 0.35);
+            color: var(--text-bright);
+            padding: 12px;
+            border-radius: var(--radius);
+            font-size: 0.88rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .pw-panel {
+            max-width: 420px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 0 0 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.05);
+        }
+        .pw-panel h3 { font-size: 0.95rem; margin-bottom: 12px; color: var(--text-bright); }
+        .pw-panel input {
+            width: 100%; padding: 12px; margin-bottom: 10px; background: #fff;
+            border: 1px solid #cfcfca; border-radius: var(--radius); color: var(--text-bright);
+            font-family: inherit; font-size: 15px;
+        }
+        .pw-panel .pw-msg { font-size: 0.85rem; margin-bottom: 10px; display: none; }
+        .pw-panel .pw-actions { display: flex; gap: 8px; }
         .login-error {
             background: rgba(239, 83, 80, 0.15);
             border: 1px solid rgba(239, 83, 80, 0.3);
@@ -1033,11 +1079,35 @@
     <div id="login-screen" class="login-screen">
         <h1>Snowplow Sales</h1>
         <p>Equipment Manager</p>
-        <div class="login-box">
+        <div class="login-box" id="login-box">
             <input type="email" id="login-email" placeholder="Email" autocomplete="email">
             <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
             <div id="login-error" class="login-error"></div>
             <button id="login-btn" class="btn btn-accent">Sign In</button>
+            <button type="button" id="forgot-link" class="login-link">Forgot password?</button>
+        </div>
+
+        <!-- Forgot password -->
+        <div class="login-box" id="forgot-box" style="display:none;">
+            <p class="login-help">Enter your email and we'll send a link to set a new password.</p>
+            <input type="email" id="forgot-email" placeholder="Email" autocomplete="email">
+            <div id="forgot-error" class="login-error"></div>
+            <div id="forgot-sent" class="login-note" style="display:none;"></div>
+            <button id="forgot-btn" class="btn btn-accent">Send Reset Link</button>
+            <button type="button" id="forgot-back" class="login-link">Back to sign in</button>
+        </div>
+    </div>
+
+    <!-- Set password (invite / reset link landing) -->
+    <div id="setpw-screen" class="login-screen" style="display:none;">
+        <h1>Snowplow Sales</h1>
+        <p>Set your admin password</p>
+        <div class="login-box">
+            <p class="login-help" id="setpw-who"></p>
+            <input type="password" id="setpw-password" placeholder="New password (8+ characters)" autocomplete="new-password" minlength="8">
+            <input type="password" id="setpw-confirm" placeholder="Confirm new password" autocomplete="new-password" minlength="8">
+            <div id="setpw-error" class="login-error"></div>
+            <button id="setpw-btn" class="btn btn-accent">Save Password</button>
         </div>
     </div>
 
@@ -1048,6 +1118,7 @@
             <div class="header-actions">
                 <button id="back-btn" class="btn-small" style="display:none;">Close</button>
                 <a href="/" id="site-btn" class="btn-small">Return to Site</a>
+                <button id="pw-btn" class="btn-small">Change Password</button>
                 <button id="logout-btn" class="btn-small">Logout</button>
             </div>
         </header>
@@ -1064,6 +1135,17 @@
         <div id="toast" class="toast"></div>
 
         <!-- Dashboard Section -->
+        <div id="pw-panel" class="pw-panel" style="display:none;">
+            <h3>Change Password</h3>
+            <input type="password" id="pw-new" placeholder="New password (8+ characters)" autocomplete="new-password" minlength="8">
+            <input type="password" id="pw-confirm" placeholder="Confirm new password" autocomplete="new-password" minlength="8">
+            <div id="pw-msg" class="pw-msg"></div>
+            <div class="pw-actions">
+                <button id="pw-save" class="btn btn-accent">Save Password</button>
+                <button id="pw-cancel" class="btn-small">Cancel</button>
+            </div>
+        </div>
+
         <div id="section-dashboard" class="dash-section active">
             <h2 class="section-title">Site Status</h2>
             <div class="dash-grid">
@@ -1311,9 +1393,21 @@
 
     </div>
 
+    <script>
+    // Invite / reset links arrive as #access_token=…&type=invite. Remember what kind of
+    // link this was before the Supabase client (next script) consumes the hash.
+    (function () {
+        var h = location.hash.replace(/^#/, '');
+        var p = new URLSearchParams(h);
+        window.__authLink = {
+            type: p.get('type') || (p.get('access_token') ? 'link' : null),
+            error: p.get('error_description') || p.get('error') || null
+        };
+    })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase-config.js?v=20260923h"></script>
-    <script src="/js/home-defaults.js?v=20260923k"></script>
-    <script src="/js/admin.js?v=20260923l"></script>
+    <script src="/js/supabase-config.js?v=20260924a"></script>
+    <script src="/js/home-defaults.js?v=20260924a"></script>
+    <script src="/js/admin.js?v=20260924a"></script>
 </body>
 </html>

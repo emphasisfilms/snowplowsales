@@ -89,11 +89,147 @@
     // ========================================
     // Auth
     // ========================================
+    var setpwScreen = document.getElementById('setpw-screen');
+    var authLink = window.__authLink || {};
+
     function checkSession() {
+        // Arrived from an invite / password-reset link: the Supabase client signs the
+        // visitor in from the URL hash; once that lands, ask for a new password.
+        if (authLink.error) {
+            showLogin();
+            loginError.textContent = authLink.error.replace(/\+/g, ' ') +
+                '. Links only work once and expire — use "Forgot password?" to get a new one.';
+            loginError.style.display = 'block';
+            history.replaceState(null, '', location.pathname);
+            return;
+        }
+        if (authLink.type) {
+            var tries = 0;
+            (function waitForSession() {
+                supabase.auth.getSession().then(function (r) {
+                    if (r.data.session) {
+                        history.replaceState(null, '', location.pathname);
+                        showSetPassword(r.data.session.user && r.data.session.user.email);
+                    } else if (++tries < 40) {
+                        setTimeout(waitForSession, 250);
+                    } else {
+                        authLink = {};
+                        showLogin();
+                        loginError.textContent = 'That link has expired. Use "Forgot password?" to get a new one.';
+                        loginError.style.display = 'block';
+                    }
+                });
+            })();
+            return;
+        }
         supabase.auth.getSession().then(function (r) {
             if (r.data.session) { showApp(); } else { showLogin(); }
         });
     }
+
+    function showSetPassword(email) {
+        loginScreen.style.display = 'none';
+        app.style.display = 'none';
+        setpwScreen.style.display = 'flex';
+        document.getElementById('setpw-who').textContent = email
+            ? 'Signed in as ' + email + '. Choose a password to use from now on.'
+            : 'Choose a password to use from now on.';
+    }
+
+    // ---- Set password (invite / reset landing) ----
+    var setpwBtn = document.getElementById('setpw-btn');
+    var setpwError = document.getElementById('setpw-error');
+    setpwBtn.addEventListener('click', function () {
+        var pw = document.getElementById('setpw-password').value;
+        var cf = document.getElementById('setpw-confirm').value;
+        setpwError.style.display = 'none';
+        if (pw.length < 8) { setpwError.textContent = 'Use at least 8 characters.'; setpwError.style.display = 'block'; return; }
+        if (pw !== cf) { setpwError.textContent = 'The two passwords don\'t match.'; setpwError.style.display = 'block'; return; }
+        setpwBtn.disabled = true;
+        setpwBtn.textContent = 'Saving...';
+        supabase.auth.updateUser({ password: pw }).then(function (r) {
+            setpwBtn.disabled = false;
+            setpwBtn.textContent = 'Save Password';
+            if (r.error) { setpwError.textContent = r.error.message; setpwError.style.display = 'block'; return; }
+            authLink = {};
+            setpwScreen.style.display = 'none';
+            showToast('Password saved');
+            showApp();
+        });
+    });
+    document.getElementById('setpw-confirm').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') setpwBtn.click();
+    });
+
+    // ---- Forgot password ----
+    var loginBox = document.getElementById('login-box');
+    var forgotBox = document.getElementById('forgot-box');
+    var forgotBtn = document.getElementById('forgot-btn');
+    var forgotError = document.getElementById('forgot-error');
+    var forgotSent = document.getElementById('forgot-sent');
+    document.getElementById('forgot-link').addEventListener('click', function () {
+        loginBox.style.display = 'none';
+        forgotBox.style.display = 'block';
+        document.getElementById('forgot-email').value = loginEmail.value;
+        forgotError.style.display = 'none';
+        forgotSent.style.display = 'none';
+        forgotBtn.style.display = '';
+    });
+    document.getElementById('forgot-back').addEventListener('click', function () {
+        forgotBox.style.display = 'none';
+        loginBox.style.display = 'block';
+    });
+    forgotBtn.addEventListener('click', function () {
+        var email = document.getElementById('forgot-email').value.trim();
+        forgotError.style.display = 'none';
+        if (!email) { forgotError.textContent = 'Enter your email address.'; forgotError.style.display = 'block'; return; }
+        forgotBtn.disabled = true;
+        forgotBtn.textContent = 'Sending...';
+        // The reset link lands on /admin with the tokens in the hash (see checkSession).
+        supabase.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/admin' }).then(function (r) {
+            forgotBtn.disabled = false;
+            forgotBtn.textContent = 'Send Reset Link';
+            if (r.error) { forgotError.textContent = r.error.message; forgotError.style.display = 'block'; return; }
+            forgotSent.textContent = 'If ' + email + ' has an admin account, a reset link is on its way. Open it on any device and choose a new password.';
+            forgotSent.style.display = 'block';
+            forgotBtn.style.display = 'none';
+        });
+    });
+
+    // ---- Change password (signed in) ----
+    var pwPanel = document.getElementById('pw-panel');
+    var pwMsg = document.getElementById('pw-msg');
+    function pwShow(text, ok) {
+        pwMsg.textContent = text;
+        pwMsg.style.color = ok ? '#2e7d32' : 'var(--red)';
+        pwMsg.style.display = 'block';
+    }
+    document.getElementById('pw-btn').addEventListener('click', function () {
+        var open = pwPanel.style.display !== 'none';
+        pwPanel.style.display = open ? 'none' : 'block';
+        pwMsg.style.display = 'none';
+        if (!open) { pwPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('pw-new').focus(); }
+    });
+    document.getElementById('pw-cancel').addEventListener('click', function () {
+        pwPanel.style.display = 'none';
+        document.getElementById('pw-new').value = '';
+        document.getElementById('pw-confirm').value = '';
+    });
+    document.getElementById('pw-save').addEventListener('click', function () {
+        var pw = document.getElementById('pw-new').value;
+        var cf = document.getElementById('pw-confirm').value;
+        if (pw.length < 8) return pwShow('Use at least 8 characters.', false);
+        if (pw !== cf) return pwShow('The two passwords don\'t match.', false);
+        var b = this; b.disabled = true; b.textContent = 'Saving...';
+        supabase.auth.updateUser({ password: pw }).then(function (r) {
+            b.disabled = false; b.textContent = 'Save Password';
+            if (r.error) return pwShow(r.error.message, false);
+            document.getElementById('pw-new').value = '';
+            document.getElementById('pw-confirm').value = '';
+            pwShow('Password changed.', true);
+            showToast('Password changed');
+        });
+    });
 
     function showLogin() {
         loginScreen.style.display = 'flex';
@@ -142,8 +278,10 @@
         supabase.auth.signOut().then(function () { showLogin(); });
     });
 
-    supabase.auth.onAuthStateChange(function (event) {
+    supabase.auth.onAuthStateChange(function (event, session) {
         if (event === 'SIGNED_OUT') showLogin();
+        // Recovery links fire this once the session is in place.
+        if (event === 'PASSWORD_RECOVERY') showSetPassword(session && session.user && session.user.email);
     });
 
     // ========================================
