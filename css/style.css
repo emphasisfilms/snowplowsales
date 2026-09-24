@@ -326,13 +326,13 @@ h4 { font-size: 0.95rem; letter-spacing: 2px; }
 .cat:hover .cat-label::before { background: var(--accent); }
 
 /* ---------- Homepage: welcome ---------- */
-.welcome-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
-.welcome-photo { position: relative; }
-.welcome-photo img { border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+.welcome-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: stretch; }
+.welcome-photo { position: relative; display: flex; }
+.welcome-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; border-radius: var(--radius); box-shadow: var(--shadow-lg); }
 .since { position: absolute; left: -18px; bottom: 28px; background: var(--accent); color: var(--ink); padding: 14px 24px 12px; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center; font-family: var(--font-head); text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 0; }
-.since span { font-size: .68rem; letter-spacing: 3px; font-weight: 600; line-height: 1.3; }
-.since .since-mid { font-size: .6rem; letter-spacing: 4px; font-weight: 500; opacity: .8; }
-.since strong { display: block; font-size: 3.8rem; font-weight: 700; line-height: .95; margin-top: 4px; letter-spacing: 1px; }
+.since span { font-size: .68rem; letter-spacing: 3px; padding-left: 3px; font-weight: 600; line-height: 1.3; }
+.since .since-mid { font-size: .6rem; letter-spacing: 4px; padding-left: 4px; font-weight: 500; opacity: .8; }
+.since strong { display: block; font-size: 3.8rem; font-weight: 700; line-height: .95; margin-top: 4px; letter-spacing: 1px; padding-left: 1px; }
 .welcome h2 { margin-bottom: 18px; }
 .welcome h2 em { font-style: normal; color: var(--accent-dark); }
 .welcome p { color: var(--ink-soft); font-size: 1.05rem; margin-bottom: 20px; }
@@ -597,6 +597,7 @@ h4 { font-size: 0.95rem; letter-spacing: 2px; }
     .promo-banner { grid-template-columns: 1fr; }
     .side-tabs, .hero-promo { display: none; }
     .since { left: 12px; }
+    .welcome-photo img { height: auto; aspect-ratio: 4 / 3; }
     .brands { margin-top: -30px; }
     .hero { min-height: 540px; }
     .contact-hero-image { height: 220px; }
